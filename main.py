@@ -1,7 +1,9 @@
 
-def main():
-    
-    if 1 == 1:
-        print("kassi sucks lmao")
-        
-main()
+
+
+
+
+
+
+if __name__ == "__main__":
+    print("running...")
