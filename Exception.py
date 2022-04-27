@@ -7,3 +7,6 @@ class InvalidWorker(Exception):
 
 class InvalidBuild(Exception):
     pass
+
+class InvalidArgs(Exception):
+    pass
