@@ -15,14 +15,14 @@ class Game():
         print(self.p1, self.p2)
 
         if p1 == 'r':
-            self.white_player = Random()
+            self.white_player = Random('white')
         elif p1 == 'f':
-            self.white_player = Heuristic()
+            self.white_player = Heuristic('white')
         
         if p2 == 'r':
-            self.blue_player = Random()
+            self.blue_player = Random('blue')
         elif p2 == 'f':
-            self.blue_player = Heuristic()
+            self.blue_player = Heuristic('blue')
 
     
     def git_board(self):
@@ -139,10 +139,22 @@ class Game():
     def ai_move(self):
         p = self.git_player_obj()
         board = self.git_board()
-        p.choose_move(board)
+        # pass in position and possible moves for each worker
+        if self._position.turn == 'w':
+            p1_pos = self._position.pos['A']
+            p1_moves = self.git_moves('A')
+            p2_pos = self._position.pos['B']
+            p2_moves = self.git_moves('B')
+        else:
+            p1_pos = self._position.pos['Y']
+            p1_moves = self.git_moves('Y')
+            p2_pos = self._position.pos['Z']
+            p2_moves = self.git_moves('Z')
+
+        result = p.choose_move(board, p1_pos, p1_moves, p2_pos, p2_moves)
+        self.make_move(result[0], result[1], result[2])
 
 
-    
     def git_moves(self, worker):
         moves = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw']
         g = self._position.pos[worker]
@@ -166,6 +178,7 @@ class Game():
                 moves.remove('nw')
             if 'se' in moves:
                 moves.remove('sw')
+        return moves
             
         
             
