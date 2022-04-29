@@ -1,19 +1,17 @@
-from Game import Position
+
 
 class Player():
 
 	def __init__(self):
 		pass
-	def _choose_move(self):
-		pass
-
-
+	
 
 class Random(Player):
 	def __init__(self):
 		pass
 	
-	def _choose_move(self):
+	def choose_move(self, board):
+		print("HI")
 		pass
 		
 
@@ -21,5 +19,5 @@ class Heuristic(Player):
 	def __init__(self):
 		pass
 
-	def _choose_move(self):
+	def choose_move(self, board):
 		pass

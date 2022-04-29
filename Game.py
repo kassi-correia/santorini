@@ -1,6 +1,7 @@
 
 from Exception import InvalidBuild, InvalidMove, InvalidRedo, InvalidUndo, InvalidWorker, WrongBuild, WrongMove, WrongWorker
 import copy
+from Players import Player, Random, Heuristic
 
 class Game():
     #robby sucks
@@ -12,9 +13,24 @@ class Game():
         self.p2 = p2
         self.workers = ['A', 'B', 'Y', 'Z']
         print(self.p1, self.p2)
+
+        if p1 == 'r':
+            self.white_player = Random()
+        elif p1 == 'f':
+            self.white_player = Heuristic()
+        
+        if p2 == 'r':
+            self.blue_player = Random()
+        elif p2 == 'f':
+            self.blue_player = Heuristic()
+
     
     def git_board(self):
         return self._position.board
+
+    def _check_if_winner(self):
+        return self._position._check_if_winner()
+
     
     def make_move(self, worker, move = None, build = None):
         lst = [0,1,2,3,4]
@@ -105,7 +121,6 @@ class Game():
         self._position = new
         
     def git_curr_player(self):
-        
         if self._position.turn == 'w':
             return 'white (AB)'
         return 'blue (YZ)'
@@ -114,6 +129,19 @@ class Game():
         if self._position.turn == 'w':
             return self.p1 
         return self.p2
+
+    def git_player_obj(self):
+        if self.git_curr_player() == 'white (AB)':
+            return self.white_player
+        else:
+             return self.blue_player
+
+    def ai_move(self):
+        p = self.git_player_obj()
+        board = self.git_board()
+        p.choose_move(board)
+
+
     
     def git_moves(self, worker):
         moves = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw']
@@ -172,6 +200,7 @@ class Position():
             self.pos['B'] = [1,3]
             self.pos['A'] = [3, 1]
             self.pos['Z'] = [3,3]
+
     def update_pos(self, worker, x, y, b):
         if worker == 'Z':
             self.board[x][y][1] = ' '
@@ -192,3 +221,19 @@ class Position():
 
     def build(self, x, y):
         self.board[x][y][0] += 1
+
+    def _check_if_winner(self):
+        for row in self.board:
+            for pos in row:
+                if pos[0] == 3 and pos[1] != ' ':
+                    if pos[1] == 'Y'or 'Z':
+                        return 'blue'
+                    else:
+                        return 'white'
+        return False
+
+
+
+
+
+            
