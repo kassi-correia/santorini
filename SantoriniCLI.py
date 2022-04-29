@@ -1,5 +1,5 @@
 import sys
-from Exception import InvalidMove, InvalidBuild, InvalidWorker
+from Exception import InvalidMove, InvalidBuild, InvalidWorker, WrongMove, WrongBuild, WrongWorker
 from Game import Game
 
 
@@ -8,8 +8,8 @@ class SantoriniCLI():
     def __init__(self, white='human', blue='human', undo='off', score='off'):
         self._white = white
         self._blue = blue
-        self._undo = off
-        self._score = off
+        self._undo = undo
+        self._score = score
         self._turn_num = 0
 
         #need to pass in h or a not whole word
@@ -29,8 +29,8 @@ class SantoriniCLI():
 
     def _display_board(self):
         """Prints current board standing."""
-        board = Game.git_board()
-        printf("""
+        board = self._game.git_board()
+        print("""
 +--+--+--+--+--+
 |{board[0][0][0]}{board[0][0][1]}|{board[0][1][0]}{board[0][1][1]}|{board[0][2][0]}{board[0][2][1]}|{board[0][3][0]}{board[0][3][1]}|{board[0][4][0]}{board[0][4][1]}|
 +--+--+--+--+--+
@@ -47,7 +47,8 @@ class SantoriniCLI():
 
 
         def _display_turn(self):
-            printf("Turn {self._turn_num} {Game.git_curr_player})
+            z = self._game.git_curr_player()
+            print("Turn {self._turn_num} {z}")
     
     def run(self):      
         """Initialize game"""
@@ -90,17 +91,18 @@ class SantoriniCLI():
                         build = input("")
                         self._game.make_move(worker, move, build)
                     except InvalidMove:
-                        build = none
+                        build = None
                         print("Not a valid build")
                     except WrongBuild:
-                        build = none
+                        build = None
                         print("Cannot build {build}")
 
             else:
+                pass
                 # pass in move for AI
                 # feeding move into game
                 
-            self._turn_num = self._turn_num + 1
+            self._turn_num += 1
             self._display_move
 
 #AI player: select move--pass in position

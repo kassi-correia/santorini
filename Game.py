@@ -108,6 +108,9 @@ class Game():
             return self.p1 
         return self.p2
     
+    def git_board(self):
+        return self._position.board
+    
     
         
         
@@ -115,7 +118,6 @@ class Game():
 class Position():
     
     def __init__(self, arg=None):
-        
         if arg != None:
             self.board = arg.board
             self.turn = arg.turn
@@ -131,39 +133,32 @@ class Position():
 						[[0, ' '],[0, ' '],[0, ' '],[0, ' '],[0, ' ']],
 						[[0, ' '],[0, 'A'],[0, ' '],[0, 'Z'],[0, ' ']],
 						[[0, ' '],[0, ' '],[0, ' '],[0, ' '],[0, ' ']]]
-			self.turn = 'w'
-			self.pieces = dict()
-			self.pieces['w'] = ['A', 'B']
-			self.pieces['b'] = ['Y', 'Z']
-			self.dirs = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw']
-			self.y = [1,1]
-			self.b = [1,3]
-			self.a = [3, 1]
-			self.z = [3,3]
-	def update_pos(self, worker, x, y, b):   
-		if worker == 'Y':
-            new.board[x][y][1] = ' '
-            new.board[b[0]][b[1]][1] = 'Y'
-            new.y = b
-            
-        elif worker == 'Z':
-            x = dfd[0]
-            y = dfd[1]
-            new.board[x][y][1] = ' '
-            new.board[b[0]][b[1]][1] = 'Z'
-            new.z = b
+            self.turn = 'w'
+            self.pieces = dict()
+            self.pieces['w'] = ['A', 'B']
+            self.pieces['b'] = ['Y', 'Z']
+            self.dirs = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw']
+            self.y = [1,1]
+            self.b = [1,3]
+            self.a = [3, 1]
+            self.z = [3,3]
+    def update_pos(self, worker, x, y, b):
+        if worker == 'Z':
+            self.board[x][y][1] = ' '
+            self.board[b[0]][b[1]][1] = 'Z'
+            self.z = b
+        elif worker == 'Y':
+            self.board[x][y][1] = ' '
+            self.board[b[0]][b[1]][1] = 'Y'
+            self.y = b
         elif worker == 'A':
-            x = dfd[0]
-            y = dfd[1]
-            new.board[x][y][1] = ' '
-            new.board[b[0]][b[1]][1] = 'a'
-            new.a = b
+            self.board[x][y][1] = ' '
+            self.board[b[0]][b[1]][1] = 'a'
+            self.a = b
         elif worker == 'B':
-            x = dfd[0]
-            y = dfd[1]
-            new.board[x][y][1] = ' '
-            new.board[b[0]][b[1]][1] = 'B'
-            new.b = b
+            self.board[x][y][1] = ' '
+            self.board[b[0]][b[1]][1] = 'B'
+            self.b = b
 
     def build(self, x, y):
         self.board[x][y][0] += 1
