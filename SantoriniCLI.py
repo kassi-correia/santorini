@@ -30,7 +30,7 @@ class SantoriniCLI():
     def _display_board(self):
         """Prints current board standing."""
         board = self._game.git_board()
-        print("""
+        print(f"""
 +--+--+--+--+--+
 |{board[0][0][0]}{board[0][0][1]}|{board[0][1][0]}{board[0][1][1]}|{board[0][2][0]}{board[0][2][1]}|{board[0][3][0]}{board[0][3][1]}|{board[0][4][0]}{board[0][4][1]}|
 +--+--+--+--+--+
@@ -48,7 +48,7 @@ class SantoriniCLI():
 
     def _display_turn(self):
         z = self._game.git_curr_player()
-        print("Turn {self._turn_num} {z}")
+        print(f"Turn {self._turn_num} {z}")
     
     def run(self):      
         """Initialize game"""
@@ -60,7 +60,7 @@ class SantoriniCLI():
             worker = None
             move = None
             build = None
-            if (self._game.git_type_player) == 'h':
+            if self._game.git_type_player() == 'h':
                 while not worker:
                     try:
                         print("Select a worker to move")
@@ -82,8 +82,8 @@ class SantoriniCLI():
                         move = None
                         print("Not a valid direction")
                     except WrongMove:
+                        print(f"Cannot move {move}")
                         move = None
-                        print("Cannot move {move}")
                 
                 while not build:
                     try:
@@ -94,8 +94,8 @@ class SantoriniCLI():
                         build = None
                         print("Not a valid build")
                     except WrongBuild:
+                        print(f"Cannot build {build}")
                         build = None
-                        print("Cannot build {build}")
 
             else:
                 pass
@@ -103,6 +103,6 @@ class SantoriniCLI():
                 # feeding move into game
                 
             self._turn_num += 1
-            self._display_move
+            #self._display_move
 
 #AI player: select move--pass in position
