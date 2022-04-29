@@ -20,14 +20,14 @@ if __name__ == "__main__":
         elif (len(sys.argv)) == 2:
             if (sys.argv[1]) not in  ['human', 'heuristic', 'random']:
                 raise InvalidArgs()
-            SantoriniCLI().run(sys.argv[1])
+            SantoriniCLI(sys.argv[1]).run()
 
         elif (len(sys.argv)) == 3:
             if (sys.argv[1]) not in  ['human', 'heuristic', 'random']:
                 raise InvalidArgs()
             if (sys.argv[2]) not in  ['human', 'heuristic', 'random']:
                 raise InvalidArgs()
-            SantoriniCLI().run(sys.argv[1], sys.argv[2])
+            SantoriniCLI(sys.argv[1], sys.argv[2]).run()
 
         elif (len(sys.argv)) == 4:
             if (sys.argv[1]) not in  ['human', 'heuristic', 'random']:
@@ -36,7 +36,7 @@ if __name__ == "__main__":
                 raise InvalidArgs()
             if (sys.argv[3]) not in  ['on', 'off']:
                 raise InvalidArgs()
-            SantoriniCLI().run(sys.argv[1], sys.argv[2], sys.argv[3])
+            SantoriniCLI(sys.argv[1], sys.argv[2], sys.argv[3]).run()
         
         else:
             if (sys.argv[1]) not in  ['human', 'heuristic', 'random']:
@@ -47,7 +47,7 @@ if __name__ == "__main__":
                 raise InvalidArgs()
             if (sys.argv[4]) not in  ['on', 'off']:
                 raise InvalidArgs()
-            SantoriniCLI().run(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
+            SantoriniCLI(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]).run()
    
     except InvalidArgs:
         print("Invalid arguments")
