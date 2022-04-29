@@ -9,3 +9,18 @@ class InvalidBuild(Exception):
 
 class InvalidArgs(Exception):
     pass
+
+class WrongWorker(Exception):
+    pass
+
+class InvalidUndo(Exception):
+    pass
+
+class InvalidRedo(Exception):
+    pass
+
+class WrongBuild(Exception):
+    pass
+
+class WrongMove(Exception):
+    pass
