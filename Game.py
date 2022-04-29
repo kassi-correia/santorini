@@ -115,8 +115,32 @@ class Game():
             return self.p1 
         return self.p2
     
-    def git_board(self):
-        return self._position.board
+    def git_moves(self, worker):
+        moves = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw']
+        g = self._position.pos[worker]
+        if g[0] == 0:
+            moves.remove('n')
+            moves.remove('nw')
+            moves.remove('ne')
+        if g[0] == 4:
+            moves.remove('se')
+            moves.remove('s')
+            moves.remove('sw')
+        if g[1] == 4:
+            moves.remove('e')
+            if 'ne' in moves:
+                moves.remove('ne')
+            if 'se' in moves:
+                moves.remove('se')
+        if g[1] == 0:
+            moves.remove('w')
+            if 'ne' in moves:
+                moves.remove('nw')
+            if 'se' in moves:
+                moves.remove('sw')
+            
+        
+            
     
     
         
