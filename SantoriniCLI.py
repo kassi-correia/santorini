@@ -2,7 +2,7 @@ import sys
 from Exception import InvalidMove, InvalidBuild, InvalidWorker, WrongMove, WrongBuild, WrongWorker
 from Game import Game
 
-
+#testing
 class SantoriniCLI():
 
     def __init__(self, white='human', blue='human', undo='off', score='off'):
