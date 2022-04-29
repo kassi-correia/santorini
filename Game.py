@@ -3,7 +3,7 @@ from proj5.Exception import InvalidBuild, InvalidMove, InvalidRedo, InvalidUndo,
 
 
 class Game():
-    
+    #robby sucks
     def __init__(self, p1, p2):
         self._position = Position()
         self._hist = []
