@@ -12,7 +12,7 @@ class Game():
         self.p2 = p2
         self.workers = ['A', 'B', 'Y', 'Z']
     
-    def get_board(self):
+    def git_board(self):
         return self._position.board
     
     def make_move(self, worker, move = None, build = None):
@@ -97,13 +97,13 @@ class Game():
         self._hist.append(self._position)
         self._position = new
         
-    def get_curr_player(self):
+    def git_curr_player(self):
         
         if self._position.turn == 'w':
             return 'white (AB)'
         return 'blue (YZ)'
     
-    def get_type_player(self):
+    def git_type_player(self):
         if self._position.turn == 'w':
             return self.p1 
         return self.p2
