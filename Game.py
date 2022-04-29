@@ -1,6 +1,6 @@
 
 from Exception import InvalidBuild, InvalidMove, InvalidRedo, InvalidUndo, InvalidWorker, WrongBuild, WrongMove, WrongWorker
-
+import copy
 
 class Game():
     #robby sucks
@@ -17,29 +17,37 @@ class Game():
         return self._position.board
     
     def make_move(self, worker, move = None, build = None):
-        
+        lst = [0,1,2,3,4]
+        blst = lst.copy()
         if worker not in self.workers:
             raise InvalidWorker()
-        if move == None:
-            return
         turn = self._position.turn
         if worker not in self._position.pieces[turn]:
             raise WrongWorker()
+        if move == None:
+            return
         if move not in self._position.dirs:
             raise InvalidMove()
+        g = self._position.pos[worker]
+        if (g[0] == 0 and (move == 'n' or move == 'nw' or move == 'ne')):
+            raise WrongMove()
+        if (g[0] == 4 and (move == 's' or move == 'sw' or move == 'se')):
+            raise WrongMove()
+        if (g[1] == 0 and (move == 'w' or move == 'nw' or move == 'sw')):
+            raise WrongMove()
+        if (g[1] == 4 and (move == 'e' or move == 'ne' or move == 'se')):
+            raise WrongMove()
+        
+        
         if build == None:
             return
         if build not in self._position.dirs:
             raise InvalidBuild()
-        
-        if worker == 'Y':
-            b = self._position.y.copy()
-        elif worker == 'Z':
-            b = self._position.z.copy()
-        elif worker == 'A':
-            b = self._position.a.copy()
-        elif worker == 'B':
-            b = self._position.b.copy()
+        c = self._position.pos[worker]
+        b = []
+        b.append(blst[c[0]])
+        b.append(blst[c[1]])
+
         dfd = b.copy()
         if move == 'n':
             b[0] -= 1
@@ -87,7 +95,6 @@ class Game():
             b[1] -= 1
         if b[0] < 0 or b[0] > 4 or b[1] > 4 or b[1] < 0:
             raise WrongBuild()
-        
         new.build(b[0], b[1])
         if new.turn == 'b':
             new.turn = 'w'
@@ -119,14 +126,11 @@ class Position():
     
     def __init__(self, arg=None):
         if arg != None:
-            self.board = arg.board
-            self.turn = arg.turn
-            self.pieces = arg.pieces
-            self.dirs = arg.dirs
-            self.y = arg.y
-            self.b = arg.b
-            self.z = arg.z
-            self.a = arg.a
+            self.board = copy.deepcopy(arg.board)
+            self.turn = arg.turn[:]
+            self.pieces = arg.pieces.copy()
+            self.dirs = arg.dirs.copy()
+            self.pos = arg.pos.copy()
         else:
             self.board = [[[0, ' '],[0, ' '],[0, ' '],[0, ' '],[0, ' ']],
 						[[0, ' '],[0, 'Y'],[0, ' '],[0, 'B'],[0, ' ']],
@@ -138,27 +142,29 @@ class Position():
             self.pieces['w'] = ['A', 'B']
             self.pieces['b'] = ['Y', 'Z']
             self.dirs = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw']
-            self.y = [1,1]
-            self.b = [1,3]
-            self.a = [3, 1]
-            self.z = [3,3]
+            
+            self.pos = dict()
+            self.pos['Y'] = [1,1]
+            self.pos['B'] = [1,3]
+            self.pos['A'] = [3, 1]
+            self.pos['Z'] = [3,3]
     def update_pos(self, worker, x, y, b):
         if worker == 'Z':
             self.board[x][y][1] = ' '
             self.board[b[0]][b[1]][1] = 'Z'
-            self.z = b
+            self.pos['Z'] = b.copy()
         elif worker == 'Y':
             self.board[x][y][1] = ' '
             self.board[b[0]][b[1]][1] = 'Y'
-            self.y = b
+            self.pos['Y'] = b.copy()
         elif worker == 'A':
             self.board[x][y][1] = ' '
             self.board[b[0]][b[1]][1] = 'A'
-            self.a = b
+            self.pos['A'] = b.copy()
         elif worker == 'B':
             self.board[x][y][1] = ' '
             self.board[b[0]][b[1]][1] = 'B'
-            self.b = b
+            self.pos['B'] = b.copy()
 
     def build(self, x, y):
         self.board[x][y][0] += 1
