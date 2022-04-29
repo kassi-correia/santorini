@@ -65,7 +65,7 @@ class SantoriniCLI():
                     try:
                         print("Select a worker to move")
                         worker = input("")
-                        self._game.make_move(worker, move, build)
+                        self._game.make_move(worker)
                     except InvalidWorker: 
                         worker = None
                         print("Not a valid worker")
@@ -77,7 +77,7 @@ class SantoriniCLI():
                     try:
                         print("Select a direction to move (n, ne, e, se, s, sw, w, nw)")
                         move = input("")
-                        self._game.make_move(worker, move, build)
+                        self._game.make_move(worker, move)
                     except InvalidMove:
                         move = None
                         print("Not a valid direction")
