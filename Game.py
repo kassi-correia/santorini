@@ -140,7 +140,7 @@ class Position():
 			self.b = [1,3]
 			self.a = [3, 1]
 			self.z = [3,3]
-	def update_pos(self, worker, x, y, b):
+	def update_pos(self, worker, x, y, b):   
 		if worker == 'Y':
             new.board[x][y][1] = ' '
             new.board[b[0]][b[1]][1] = 'Y'
