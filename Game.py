@@ -11,6 +11,7 @@ class Game():
         self.p1 = p1
         self.p2 = p2
         self.workers = ['A', 'B', 'Y', 'Z']
+        print(self.p1, self.p2)
     
     def git_board(self):
         return self._position.board
@@ -32,58 +33,57 @@ class Game():
             raise InvalidBuild()
         
         if worker == 'Y':
-            b = self._position.y
+            b = self._position.y.copy()
         elif worker == 'Z':
-            b = self._position.z
+            b = self._position.z.copy()
         elif worker == 'A':
-            b = self._position.a 
+            b = self._position.a.copy()
         elif worker == 'B':
-            b = self._position.b
-        dfd = b
+            b = self._position.b.copy()
+        dfd = b.copy()
         if move == 'n':
-            b[0] += 1
+            b[0] -= 1
         elif move == 'ne':
-            b[0] +=1
+            b[0] -=1
             b[1] += 1
         elif move == 'e':
             b[1] += 1
         elif move == 'se':
-            b[0] -=1
+            b[0] +=1
             b[1] += 1
         elif move == 's':
-            b[0] -=1
+            b[0] +=1
         elif move == 'sw':
-            b[0] -= 1
+            b[0] += 1
             b[1] -=1
         elif move == 'w':
             b[1] -= 1
         elif move == 'nw':
-            b[0] +=1
+            b[0] -=1
             b[1] -= 1
         if b[0] < 0 or b[0] > 4 or b[1] > 4 or b[1] < 0:
             raise WrongMove()
-        
         new = Position(self._position)
         new.update_pos(worker, dfd[0], dfd[1], b)
-        if move == 'n':
-            b[0] += 1
-        elif move == 'ne':
-            b[0] +=1
-            b[1] += 1
-        elif move == 'e':
-            b[1] += 1
-        elif move == 'se':
-            b[0] -=1
-            b[1] += 1
-        elif move == 's':
-            b[0] -=1
-        elif move == 'sw':
+        if build == 'n':
             b[0] -= 1
-            b[1] -=1
-        elif move == 'w':
-            b[1] -= 1
-        elif move == 'nw':
+        elif build == 'ne':
+            b[0] -=1
+            b[1] += 1
+        elif build == 'e':
+            b[1] += 1
+        elif build == 'se':
             b[0] +=1
+            b[1] += 1
+        elif build == 's':
+            b[0] +=1
+        elif build == 'sw':
+            b[0] += 1
+            b[1] -=1
+        elif build == 'w':
+            b[1] -= 1
+        elif build == 'nw':
+            b[0] -=1
             b[1] -= 1
         if b[0] < 0 or b[0] > 4 or b[1] > 4 or b[1] < 0:
             raise WrongBuild()
@@ -153,7 +153,7 @@ class Position():
             self.y = b
         elif worker == 'A':
             self.board[x][y][1] = ' '
-            self.board[b[0]][b[1]][1] = 'a'
+            self.board[b[0]][b[1]][1] = 'A'
             self.a = b
         elif worker == 'B':
             self.board[x][y][1] = ' '

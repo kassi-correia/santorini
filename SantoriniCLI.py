@@ -90,7 +90,7 @@ class SantoriniCLI():
                         print("Select a direction to build (n, ne, e, se, s, sw, w, nw)")
                         build = input("")
                         self._game.make_move(worker, move, build)
-                    except InvalidMove:
+                    except InvalidBuild:
                         build = None
                         print("Not a valid build")
                     except WrongBuild:
