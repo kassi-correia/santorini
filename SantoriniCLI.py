@@ -46,9 +46,9 @@ class SantoriniCLI():
         pass
 
 
-        def _display_turn(self):
-            z = self._game.git_curr_player()
-            print("Turn {self._turn_num} {z}")
+    def _display_turn(self):
+        z = self._game.git_curr_player()
+        print("Turn {self._turn_num} {z}")
     
     def run(self):      
         """Initialize game"""
