@@ -12,7 +12,6 @@ class Game():
         self.p1 = p1
         self.p2 = p2
         self.workers = ['A', 'B', 'Y', 'Z']
-<<<<<<< HEAD
         
         self.locs = dict()
         self.locs['n'] = [-1, 0]
@@ -24,8 +23,6 @@ class Game():
         self.locs['se'] = [1, 1]
         self.locs['e'] = [0, 1]
         
-=======
-        print(self.p1, self.p2)
 
         if p1 == 'r':
             self.white_player = Random('white')
@@ -37,7 +34,6 @@ class Game():
         elif p2 == 'f':
             self.blue_player = Heuristic('blue')
 
->>>>>>> fbbcebc0bd43642a09498d8cd88bd2fdee6f253d
     
     def git_board(self):
         return self._position.board
@@ -48,7 +44,6 @@ class Game():
     
     def make_move(self, worker, move = None, build = None):
         lst = [0,1,2,3,4]
-        blst = lst.copy()
         if worker not in self.workers:
             raise InvalidWorker()
         turn = self._position.turn
@@ -111,10 +106,6 @@ class Game():
         if self._position.turn == 'w':
             return self.p1 
         return self.p2
-<<<<<<< HEAD
-    
-    
-=======
 
     def git_player_obj(self):
         if self.git_curr_player() == 'white (AB)':
@@ -141,7 +132,6 @@ class Game():
         self.make_move(result[0], result[1], result[2])
 
 
->>>>>>> fbbcebc0bd43642a09498d8cd88bd2fdee6f253d
     def git_moves(self, worker):
         moves = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw']
         g = self._position.pos[worker]
@@ -165,7 +155,6 @@ class Game():
                 moves.remove('nw')
             if 'se' in moves:
                 moves.remove('sw')
-<<<<<<< HEAD
 
     def git_build(self, worker):
         moves = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw']
@@ -191,7 +180,6 @@ class Game():
             if 'se' in moves:
                 moves.remove('sw')
 
-=======
         return moves
             
         
@@ -200,7 +188,6 @@ class Game():
     
         
         
->>>>>>> fbbcebc0bd43642a09498d8cd88bd2fdee6f253d
 
 class Position():
     
