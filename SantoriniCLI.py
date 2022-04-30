@@ -2,7 +2,6 @@ import sys
 from Exception import InvalidMove, InvalidBuild, InvalidWorker, WrongMove, WrongBuild, WrongWorker
 from Game import Game
 
-
 class SantoriniCLI():
 
     def __init__(self, white='human', blue='human', undo='off', score='off'):
@@ -12,16 +11,19 @@ class SantoriniCLI():
         self._score = score
         self._turn_num = 0
 
-        #need to pass in h or a not whole word
         if self._white == 'human':
             self.white_type = 'h'
+        elif self._white == 'random':
+            self.white_type = 'r'
         else:
-            self.white_type = 'a'
+             self.white_type = 'f'
 
         if self._blue == 'human':
             self.blue_type = 'h'
+        elif self._blue == 'random':
+            self.blue_type = 'r'
         else:
-            self.blue_type = 'a'
+             self.blue_type = 'f'
 
         self._game = Game(self.white_type, self.blue_type)
 
@@ -49,17 +51,22 @@ class SantoriniCLI():
     def _display_turn(self):
         z = self._game.git_curr_player()
         print(f"Turn {self._turn_num} {z}")
+
+    def _check_if_winner(self):
+        """Returns false if no winner, or returns 'blue' or 'white' if one
+        has won."""
+        return self._game._check_if_winner()
     
     def run(self):      
         """Initialize game"""
         #while not win
-        while True:
+        while not self._check_if_winner():
             self._display_board()
             self._display_turn()
-                #make move takes worker, direction
             worker = None
             move = None
             build = None
+            
             if self._game.git_type_player() == 'h':
                 while not worker:
                     try:
@@ -96,13 +103,14 @@ class SantoriniCLI():
                     except WrongBuild:
                         print(f"Cannot build {build}")
                         build = None
-
             else:
-                pass
-                # pass in move for AI
-                # feeding move into game
-                
+                self._game.ai_move()
+
             self._turn_num += 1
             #self._display_move
 
-#AI player: select move--pass in position
+        print(f"""{self._check_if_winner()} has won""")
+        sys.exit()
+
+
+

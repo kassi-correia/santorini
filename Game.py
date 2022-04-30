@@ -1,6 +1,7 @@
 
 from Exception import InvalidBuild, InvalidMove, InvalidRedo, InvalidUndo, InvalidWorker, WrongBuild, WrongMove, WrongWorker
 import copy
+from Players import Player, Random, Heuristic
 
 class Game():
     #robby sucks
@@ -11,6 +12,7 @@ class Game():
         self.p1 = p1
         self.p2 = p2
         self.workers = ['A', 'B', 'Y', 'Z']
+<<<<<<< HEAD
         
         self.locs = dict()
         self.locs['n'] = [-1, 0]
@@ -22,9 +24,27 @@ class Game():
         self.locs['se'] = [1, 1]
         self.locs['e'] = [0, 1]
         
+=======
+        print(self.p1, self.p2)
+
+        if p1 == 'r':
+            self.white_player = Random('white')
+        elif p1 == 'f':
+            self.white_player = Heuristic('white')
+        
+        if p2 == 'r':
+            self.blue_player = Random('blue')
+        elif p2 == 'f':
+            self.blue_player = Heuristic('blue')
+
+>>>>>>> fbbcebc0bd43642a09498d8cd88bd2fdee6f253d
     
     def git_board(self):
         return self._position.board
+
+    def _check_if_winner(self):
+        return self._position._check_if_winner()
+
     
     def make_move(self, worker, move = None, build = None):
         lst = [0,1,2,3,4]
@@ -83,7 +103,6 @@ class Game():
         self._position = new
         
     def git_curr_player(self):
-        
         if self._position.turn == 'w':
             return 'white (AB)'
         return 'blue (YZ)'
@@ -92,8 +111,37 @@ class Game():
         if self._position.turn == 'w':
             return self.p1 
         return self.p2
+<<<<<<< HEAD
     
     
+=======
+
+    def git_player_obj(self):
+        if self.git_curr_player() == 'white (AB)':
+            return self.white_player
+        else:
+             return self.blue_player
+
+    def ai_move(self):
+        p = self.git_player_obj()
+        board = self.git_board()
+        # pass in position and possible moves for each worker
+        if self._position.turn == 'w':
+            p1_pos = self._position.pos['A']
+            p1_moves = self.git_moves('A')
+            p2_pos = self._position.pos['B']
+            p2_moves = self.git_moves('B')
+        else:
+            p1_pos = self._position.pos['Y']
+            p1_moves = self.git_moves('Y')
+            p2_pos = self._position.pos['Z']
+            p2_moves = self.git_moves('Z')
+
+        result = p.choose_move(board, p1_pos, p1_moves, p2_pos, p2_moves)
+        self.make_move(result[0], result[1], result[2])
+
+
+>>>>>>> fbbcebc0bd43642a09498d8cd88bd2fdee6f253d
     def git_moves(self, worker):
         moves = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw']
         g = self._position.pos[worker]
@@ -117,6 +165,7 @@ class Game():
                 moves.remove('nw')
             if 'se' in moves:
                 moves.remove('sw')
+<<<<<<< HEAD
 
     def git_build(self, worker):
         moves = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw']
@@ -142,6 +191,16 @@ class Game():
             if 'se' in moves:
                 moves.remove('sw')
 
+=======
+        return moves
+            
+        
+            
+    
+    
+        
+        
+>>>>>>> fbbcebc0bd43642a09498d8cd88bd2fdee6f253d
 
 class Position():
     
@@ -169,6 +228,7 @@ class Position():
             self.pos['B'] = [1,3]
             self.pos['A'] = [3, 1]
             self.pos['Z'] = [3,3]
+
     def update_pos(self, worker, x, y, b):
         if worker == 'Z':
             self.board[x][y][1] = ' '
@@ -189,3 +249,19 @@ class Position():
 
     def build(self, x, y):
         self.board[x][y][0] += 1
+
+    def _check_if_winner(self):
+        for row in self.board:
+            for pos in row:
+                if pos[0] == 3 and pos[1] != ' ':
+                    if pos[1] == 'Y'or 'Z':
+                        return 'blue'
+                    else:
+                        return 'white'
+        return False
+
+
+
+
+
+            
