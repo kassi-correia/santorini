@@ -97,6 +97,9 @@ class SantoriniCLI():
                         print("Select a direction to build (n, ne, e, se, s, sw, w, nw)")
                         build = input("")
                         self._game.make_move(worker, move, build)
+                    except WrongMove:
+                        print(f"Cannot move {move}")
+                        move = None
                     except InvalidBuild:
                         build = None
                         print("Not a valid build")
@@ -104,7 +107,9 @@ class SantoriniCLI():
                         print(f"Cannot build {build}")
                         build = None
             else:
-                self._game.ai_move()
+                result = self._game.ai_move()
+                print(f"{result[0]},{result[1]},{result[2]}")
+
 
             self._turn_num += 1
             #self._display_move

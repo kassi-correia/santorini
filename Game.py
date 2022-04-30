@@ -12,7 +12,6 @@ class Game():
         self.p1 = p1
         self.p2 = p2
         self.workers = ['A', 'B', 'Y', 'Z']
-        print(self.p1, self.p2)
 
         if p1 == 'r':
             self.white_player = Random('white')
@@ -30,6 +29,43 @@ class Game():
 
     def _check_if_winner(self):
         return self._position._check_if_winner()
+
+
+    def _wrong_move(self, worker, move, build, board, pos):
+        x = pos[0]
+        y = pos[1]
+        players = ['A', 'B', 'Y', 'Z']
+        players.remove(worker)
+
+        if move == 'n':
+            if board[x-1][y][1] in players or board[x-1][y][0] == 4:
+                return True
+        elif move == 'ne':
+            if board[x-1][y+1][1] in players or board[x-1][y+1][0] == 4:
+                return True
+        elif move == 'e':
+            if board[x][y+1][1] in players or board[x][y+1][0] == 4:
+                return True
+        elif move == 'se':
+            if board[x+1][y+1][1] in players or board[x+1][y+1][0] == 4:
+                return True
+        elif move == 's':
+            if board[x+1][y][1] in players or board[x+1][y][0] == 4:
+                return True
+        elif move == 'sw':
+            if board[x+1][y-1][1] in players or board[x+1][y-1][0] == 4:
+                return True
+        elif move == 'w':
+            if board[x][y-1][1] in players or board[x][y-1][0] == 4:
+                return True
+        elif move == 'nw':
+            if board[x-1][y-1][1] in players or board[x-1][y-1][0] == 4:
+                return True
+        else:
+            return False
+
+
+
 
     
     def make_move(self, worker, move = None, build = None):
@@ -53,12 +89,31 @@ class Game():
             raise WrongMove()
         if (g[1] == 4 and (move == 'e' or move == 'ne' or move == 'se')):
             raise WrongMove()
+        #K: check if another player is there or if level 4
+        board = self.git_board()
+        if self._wrong_move(worker, move, build, board, g):
+            raise WrongMove()
         
         
         if build == None:
             return
         if build not in self._position.dirs:
             raise InvalidBuild()
+
+
+        # check if another player is there or if level 4 before build?
+        temp = g.copy()
+        n = self._new_pos(move, temp)
+
+        if self._wrong_build(n, board, build, worker):
+            raise WrongBuild()
+
+
+
+
+
+
+
         c = self._position.pos[worker]
         b = []
         b.append(blst[c[0]])
@@ -120,6 +175,67 @@ class Game():
         self._hist.append(self._position)
         self._position = new
         
+
+    def _wrong_build(self, pos, board, build, worker):
+        x = pos[0]
+        y = pos[1]
+        players = ['A', 'B', 'Y', 'Z']
+        players.remove(worker)
+        move = build
+        if move == 'n':
+            if board[x-1][y][1] in players or board[x-1][y][0] == 4:
+                return True
+        elif move == 'ne':
+            if board[x-1][y+1][1] in players or board[x-1][y+1][0] == 4:
+                return True
+        elif move == 'e':
+            if board[x][y+1][1] in players or board[x][y+1][0] == 4:
+                return True
+        elif move == 'se':
+            if board[x+1][y+1][1] in players or board[x+1][y+1][0] == 4:
+                return True
+        elif move == 's':
+            if board[x+1][y][1] in players or board[x+1][y][0] == 4:
+                return True
+        elif move == 'sw':
+            if board[x+1][y-1][1] in players or board[x+1][y-1][0] == 4:
+                return True
+        elif move == 'w':
+            if board[x][y-1][1] in players or board[x][y-1][0] == 4:
+                return True
+        elif move == 'nw':
+            if board[x-1][y-1][1] in players or board[x-1][y-1][0] == 4:
+                return True
+        else:
+            return False
+
+
+
+    def _new_pos(self, move, pos):
+        """Returns new pos after move (doesn't actually change board)"""
+        p = pos
+        if move == 'n':
+            p[0] -= 1
+        elif move == 'ne':
+            p[0] -=1
+            p[1] += 1
+        elif move == 'e':
+            p[1] += 1
+        elif move == 'se':
+            p[0] +=1
+            p[1] += 1
+        elif move == 's':
+            p[0] +=1
+        elif move == 'sw':
+            p[0] += 1
+            p[1] -=1
+        elif move == 'w':
+            p[1] -= 1
+        elif move == 'nw':
+            p[0] -=1
+            p[1] -= 1
+        return p
+
     def git_curr_player(self):
         if self._position.turn == 'w':
             return 'white (AB)'
@@ -142,20 +258,21 @@ class Game():
         # pass in position and possible moves for each worker
         if self._position.turn == 'w':
             p1_pos = self._position.pos['A']
-            p1_moves = self.git_moves('A')
+            p1_moves = self.git_moves('A', board)
             p2_pos = self._position.pos['B']
-            p2_moves = self.git_moves('B')
+            p2_moves = self.git_moves('B', board)
         else:
             p1_pos = self._position.pos['Y']
-            p1_moves = self.git_moves('Y')
+            p1_moves = self.git_moves('Y', board)
             p2_pos = self._position.pos['Z']
-            p2_moves = self.git_moves('Z')
+            p2_moves = self.git_moves('Z', board)
 
         result = p.choose_move(board, p1_pos, p1_moves, p2_pos, p2_moves)
         self.make_move(result[0], result[1], result[2])
+        return result
 
 
-    def git_moves(self, worker):
+    def git_moves(self, worker, board):
         moves = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw']
         g = self._position.pos[worker]
         if g[0] == 0:
@@ -178,7 +295,36 @@ class Game():
                 moves.remove('nw')
             if 'se' in moves:
                 moves.remove('sw')
+        # K: remove spot if it is occupied or if its level 4
+        x = g[0]
+        y = g[1]
+        for move in moves:
+            if move == 'n':
+                if board[x-1][y][1] != ' ' or board[x-1][y][0] == 4:
+                    moves.remove('n')
+            elif move == 'ne':
+                if board[x-1][y+1][1] != ' ' or board[x-1][y+1][0] == 4:
+                    moves.remove('ne')
+            elif move == 'e':
+                if board[x][y+1][1] != ' ' or board[x][y+1][0] == 4:
+                    moves.remove('e')
+            elif move == 'se':
+                if board[x+1][y+1][1] != ' ' or board[x+1][y+1][0] == 4:
+                    moves.remove('se')
+            elif move == 's':
+                if board[x+1][y][1] != ' ' or board[x+1][y][0] == 4:
+                    moves.remove('s')
+            elif move == 'sw':
+                if board[x+1][y-1][1] != ' ' or board[x+1][y-1][0] == 4:
+                    moves.remove('sw')
+            elif move == 'w':
+                if board[x][y-1][1] != ' ' or board[x][y-1][0] == 4:
+                    moves.remove('w')
+            elif move == 'nw':
+                if board[x-1][y-1][1] != ' ' or board[x-1][y-1][0] == 4:
+                    moves.remove('nw')
         return moves
+
             
         
             
