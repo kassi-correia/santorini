@@ -12,6 +12,17 @@ class Game():
         self.p1 = p1
         self.p2 = p2
         self.workers = ['A', 'B', 'Y', 'Z']
+        
+        self.locs = dict()
+        self.locs['n'] = [-1, 0]
+        self.locs['ne'] = [-1, 1]
+        self.locs['nw'] = [-1, -1]
+        self.locs['w'] = [0, -1]
+        self.locs['sw'] = [1, -1]
+        self.locs['s'] = [1, 0]
+        self.locs['se'] = [1, 1]
+        self.locs['e'] = [0, 1]
+        
 
         if p1 == 'r':
             self.white_player = Random('white')
@@ -69,8 +80,6 @@ class Game():
 
     
     def make_move(self, worker, move = None, build = None):
-        lst = [0,1,2,3,4]
-        blst = lst.copy()
         if worker not in self.workers:
             raise InvalidWorker()
         turn = self._position.turn
@@ -116,56 +125,24 @@ class Game():
 
         c = self._position.pos[worker]
         b = []
-        b.append(blst[c[0]])
-        b.append(blst[c[1]])
-
-        dfd = b.copy()
-        if move == 'n':
-            b[0] -= 1
-        elif move == 'ne':
-            b[0] -=1
-            b[1] += 1
-        elif move == 'e':
-            b[1] += 1
-        elif move == 'se':
-            b[0] +=1
-            b[1] += 1
-        elif move == 's':
-            b[0] +=1
-        elif move == 'sw':
-            b[0] += 1
-            b[1] -=1
-        elif move == 'w':
-            b[1] -= 1
-        elif move == 'nw':
-            b[0] -=1
-            b[1] -= 1
+        dfd = c.copy()
+        
+        for i in range(2):
+            b.append(c[i] + self.locs[move][i])
+        
+        bh = b.copy()
         if b[0] < 0 or b[0] > 4 or b[1] > 4 or b[1] < 0:
             raise WrongMove()
-        new = Position(self._position)
-        new.update_pos(worker, dfd[0], dfd[1], b)
-        if build == 'n':
-            b[0] -= 1
-        elif build == 'ne':
-            b[0] -=1
-            b[1] += 1
-        elif build == 'e':
-            b[1] += 1
-        elif build == 'se':
-            b[0] +=1
-            b[1] += 1
-        elif build == 's':
-            b[0] +=1
-        elif build == 'sw':
-            b[0] += 1
-            b[1] -=1
-        elif build == 'w':
-            b[1] -= 1
-        elif build == 'nw':
-            b[0] -=1
-            b[1] -= 1
+        
+        for i in range(2):
+            b[i] += self.locs[build][i]
+        
+        
         if b[0] < 0 or b[0] > 4 or b[1] > 4 or b[1] < 0:
             raise WrongBuild()
+        
+        new = Position(self._position)
+        new.update_pos(worker, dfd[0], dfd[1], bh)
         new.build(b[0], b[1])
         if new.turn == 'b':
             new.turn = 'w'
@@ -323,6 +300,31 @@ class Game():
             elif move == 'nw':
                 if board[x-1][y-1][1] != ' ' or board[x-1][y-1][0] == 4:
                     moves.remove('nw')
+
+    def git_build(self, worker):
+        moves = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw']
+        g = self._position.pos[worker]
+        if g[0] == 0:
+            moves.remove('n')
+            moves.remove('nw')
+            moves.remove('ne')
+        if g[0] == 4:
+            moves.remove('se')
+            moves.remove('s')
+            moves.remove('sw')
+        if g[1] == 4:
+            moves.remove('e')
+            if 'ne' in moves:
+                moves.remove('ne')
+            if 'se' in moves:
+                moves.remove('se')
+        if g[1] == 0:
+            moves.remove('w')
+            if 'ne' in moves:
+                moves.remove('nw')
+            if 'se' in moves:
+                moves.remove('sw')
+
         return moves
 
             
