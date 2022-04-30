@@ -43,7 +43,6 @@ class Game():
 
     
     def make_move(self, worker, move = None, build = None):
-        lst = [0,1,2,3,4]
         if worker not in self.workers:
             raise InvalidWorker()
         turn = self._position.turn
