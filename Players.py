@@ -2,64 +2,27 @@ from random import choice
 
 class Player():
 	def __init__(self, color):
+		self.locs = dict()
+		self.locs['n'] = [-1, 0]
+		self.locs['ne'] = [-1, 1]
+		self.locs['nw'] = [-1, -1]
+		self.locs['w'] = [0, -1]
+		self.locs['sw'] = [1, -1]
+		self.locs['s'] = [1, 0]
+		self.locs['se'] = [1, 1]
+		self.locs['e'] = [0, 1]
 		if color == 'white':
 			self._pieces= ['A','B']
+			self._non = ['Y', 'Z']
 		else:
 			self._pieces= ['Y','Z']
-
-	
-
-class Random(Player):
-	def __init__(self, color):
-		if color == 'white':
-			self._pieces= ['A','B']
-		else:
-			self._pieces= ['Y','Z']
-	
-	def choose_move(self, board, p1_pos, p1_moves, p2_pos, p2_moves):
-		"""Returns list with worker, move, and build to be played"""
-		# choice() randomly picks item from list
-		worker = choice(self._pieces)
-		if worker == 'A' or 'Y':
-			move = choice(p1_moves)
-			new_pos = self._update_pos(move, p1_pos)
-		else:
-			move = choice(p2_moves)
-			new_pos = self._update_pos(move, p2_pos)
-		valid_builds = self._get_valid_builds(new_pos)
-		build = choice(valid_builds)
-		result = []
-		result.append(worker)
-		result.append(move)
-		result.append(build)
-		return result
-
-
+			self._non= ['A','B']
 
 	def _update_pos(self, move, pos):
-		if move == 'n':
-			pos[0] -= 1
-		elif move == 'ne':
-			pos[0] -=1
-			pos[1] += 1
-		elif move == 'e':
-			pos[1] += 1
-		elif move == 'se':
-			pos[0] +=1
-			pos[1] += 1
-		elif move == 's':
-			pos[0] +=1
-		elif move == 'sw':
-			pos[0] += 1
-			pos[1] -=1
-		elif move == 'w':
-			pos[1] -= 1
-		elif move == 'nw':
-			pos[0] -=1
-			pos[1] -= 1
+		pos+= self.locs[move]
 		return pos
-
-	def _get_valid_builds(self, pos):
+	
+	def _pick_build(self, pos):
 		moves = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw']
 		g = pos
 		if g[0] == 0:
@@ -82,7 +45,25 @@ class Random(Player):
 				moves.remove('nw')
 			if 'se' in moves:
 				moves.remove('sw')
-		return moves
+		return choice(moves)
+
+	
+
+class Random(Player):
+	
+	def choose_move(self, board, p1_pos, p1_moves, p2_pos, p2_moves):
+		"""Returns list with worker, move, and build to be played"""
+		# choice() randomly picks item from list
+		worker = choice(self._pieces)
+		if worker == 'A' or 'Y':
+			move = choice(p1_moves)
+			new_pos = self._update_pos(move, p1_pos)
+		else:
+			move = choice(p2_moves)
+			new_pos = self._update_pos(move, p2_pos)
+		build = self._pick_build(new_pos)
+		return [worker, move, build]
+
 
 
 
@@ -91,8 +72,63 @@ class Random(Player):
 		
 
 class Heuristic(Player):
-	def __init__(self):
-		pass
-
-	def choose_move(self, board):
-		pass
+    
+    
+    def _height_score(self, board, pos1, pos2):
+        return board[pos1[0]][pos1[1]][0] + board[pos2[0]][pos2[1]][0]
+    
+    def _center_score(self, pos1, pos2):
+        ret = 0
+        if pos1 == [2,2]:
+            ret = 2
+        elif 0 in pos1 or 4 in pos1:
+            ret += 0
+        else:
+            ret += 1
+        if pos2 == [2,2]:
+            ret += 2
+        elif 0 in pos2 or 4 in pos2:
+            ret += 0
+        else:
+            ret += 1
+        return ret
+    
+    def _dist_score(self, pos1, pos2, pos3, pos4):
+        
+        dist13 = min(max(pos1[0] - pos3[0], pos3[0]-pos1[0]), max(pos1[1] - pos3[1], pos3[1]-pos1[1]))
+        dist14 = min(max(pos1[0] - pos4[0], pos4[0]-pos1[0]), max(pos1[1] - pos4[1], pos4[1]-pos1[1]))
+        dist24 = min(max(pos2[0] - pos4[0], pos4[0]-pos2[0]), max(pos2[1] - pos4[1], pos4[1]-pos2[1]))
+        dist23 = min(max(pos2[0] - pos3[0], pos3[0]-pos2[0]), max(pos2[1] - pos3[1], pos3[1]-pos2[1]))
+        
+        return 8 - (min(dist13, dist23), min(dist14, dist24))
+    
+    def _calc_score(self, board, pos1, pos2, pos3, pos4):
+        return self._height_score(board, pos1, pos2) + self._center_score(pos1, pos2) + self._dist_score(pos1, pos2, pos3, pos4)
+    def choose_move(self, board, pos, moves1, moves2):
+        pos1 = pos[self._pieces[0]]
+        pos2 = pos[self._pieces[1]]
+        pos3 = pos[self._non[0]]
+        pos4 = pos[self._non[1]]
+        
+        maxM = None
+        maxP = None
+        maxS = 0
+        for e in moves1:
+            score = self._calc_score(board, pos1, pos2, pos3, pos4)
+            if score > maxS:
+                maxS = score
+                maxM = e
+                maxP = self._pieces[0]
+        for e in moves2:
+            score = self._calc_score(board, pos1, pos2, pos3, pos4)
+            if score > maxS:
+                maxS = score
+                maxM = e
+                maxP = self._pieces[1]
+        pos = self._update_pos(maxM, pos[maxP])
+        build = self._pick_build(pos)
+        return [maxP, maxM, build]
+        
+        
+        
+        
