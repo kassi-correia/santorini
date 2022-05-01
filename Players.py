@@ -21,7 +21,9 @@ class Player():
 			self._non= ['A','B']
 
 	def _update_pos(self, move, pos):
-		pos+= self.locs[move]
+
+		for i in range(2):
+			pos[i] += self.locs[move][i]
 		return pos
 	
 	def _pick_build(self, pos, board):
