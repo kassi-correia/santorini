@@ -190,27 +190,8 @@ class Game():
 
     def _new_pos(self, move, pos):
         """Returns new pos after move (doesn't actually change board)"""
-        p = pos
-        if move == 'n':
-            p[0] -= 1
-        elif move == 'ne':
-            p[0] -=1
-            p[1] += 1
-        elif move == 'e':
-            p[1] += 1
-        elif move == 'se':
-            p[0] +=1
-            p[1] += 1
-        elif move == 's':
-            p[0] +=1
-        elif move == 'sw':
-            p[0] += 1
-            p[1] -=1
-        elif move == 'w':
-            p[1] -= 1
-        elif move == 'nw':
-            p[0] -=1
-            p[1] -= 1
+        p = pos.copy()
+        p += self.locs[move]
         return p
 
     def git_curr_player(self):
