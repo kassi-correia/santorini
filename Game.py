@@ -215,14 +215,14 @@ class Game():
         board = self.git_board()
         # pass in position and possible moves for each worker
         if self._position.turn == 'w':
-            p1_pos = self._position.pos['A']
+            p1_pos = self._position.pos['A'].copy()
             p1_moves = self.git_moves('A', board)
-            p2_pos = self._position.pos['B']
+            p2_pos = self._position.pos['B'].copy()
             p2_moves = self.git_moves('B', board)
         else:
-            p1_pos = self._position.pos['Y']
+            p1_pos = self._position.pos['Y'].copy()
             p1_moves = self.git_moves('Y', board)
-            p2_pos = self._position.pos['Z']
+            p2_pos = self._position.pos['Z'].copy()
             p2_moves = self.git_moves('Z', board)
 
         result = p.choose_move(board, p1_pos, p1_moves, p2_pos, p2_moves)
