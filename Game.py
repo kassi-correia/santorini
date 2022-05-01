@@ -307,6 +307,12 @@ class Game():
                 moves.remove('sw')
 
         return moves
+    
+    def git_worker_pos(self, worker):
+        
+        if worker not in self._position.pos:
+            raise InvalidWorker()
+        return self._position.pos[worker]
 
             
         
