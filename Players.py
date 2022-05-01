@@ -105,7 +105,7 @@ class Heuristic(Player):
         dist24 = min(max(pos2[0] - pos4[0], pos4[0]-pos2[0]), max(pos2[1] - pos4[1], pos4[1]-pos2[1]))
         dist23 = min(max(pos2[0] - pos3[0], pos3[0]-pos2[0]), max(pos2[1] - pos3[1], pos3[1]-pos2[1]))
         
-        return 8 - (min(dist13, dist23), min(dist14, dist24))
+        return 8 - (min(dist13, dist23) + min(dist14, dist24))
     
     def _calc_score(self, board, pos1, pos2, pos3, pos4):
         return self._height_score(board, pos1, pos2) + self._center_score(pos1, pos2) + self._dist_score(pos1, pos2, pos3, pos4)
@@ -120,21 +120,25 @@ class Heuristic(Player):
         maxP = None
         maxS = 0
         for e in moves1:
-            pos1 += self.locs[e]
+            for i in range(2):
+                pos1[i] += self.locs[e][i]
             score = self._calc_score(board, pos1, pos2, pos3, pos4)
             if score > maxS:
                 maxS = score
                 maxM = e
                 maxP = self._pieces[0]
-            pos1 -= self.locs[e]
+            for i in range(2):
+                pos1[i] -= self.locs[e][i]
         for e in moves2:
-            pos2 += self.locs[e]
+            for i in range(2):
+                pos2[i] += self.locs[e][i]
             score = self._calc_score(board, pos1, pos2, pos3, pos4)
             if score > maxS:
                 maxS = score
                 maxM = e
                 maxP = self._pieces[1]
-            pos2 -= self.locs[e]
+            for i in range(2):
+                pos2[i] -= self.locs[e][i]
         pos = self._update_pos(maxM, pos[maxP].copy())
         build = self._pick_build(pos)
         return [maxP, maxM, build]

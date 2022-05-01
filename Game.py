@@ -220,7 +220,6 @@ class Game():
         else:
             p1_moves = self.git_moves('Y', board)
             p2_moves = self.git_moves('Z', board)
-
         result = p.choose_move(board, self._position.pos, p1_moves, p2_moves)
         self.make_move(result[0], result[1], result[2])
         return result
@@ -277,6 +276,7 @@ class Game():
             elif move == 'nw':
                 if board[x-1][y-1][1] != ' ' or board[x-1][y-1][0] == 4:
                     moves.remove('nw')
+        return moves
 
     def git_build(self, worker):
         moves = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw']
