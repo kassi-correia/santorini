@@ -1,5 +1,7 @@
 from random import choice
 
+INFINITY = 300
+
 class Player():
 	def __init__(self, color):
 		self.locs = dict()
@@ -51,16 +53,16 @@ class Player():
 
 class Random(Player):
 	
-	def choose_move(self, board, p1_pos, p1_moves, p2_pos, p2_moves):
+	def choose_move(self, board, p1_pos, p1_moves, p2_moves):
 		"""Returns list with worker, move, and build to be played"""
 		# choice() randomly picks item from list
-		worker = choice(self._pieces)
-		if worker == 'A' or 'Y':
+		if choice([False,True]):
+			worker = self._pieces[0]
 			move = choice(p1_moves)
-			new_pos = self._update_pos(move, p1_pos)
 		else:
 			move = choice(p2_moves)
-			new_pos = self._update_pos(move, p2_pos)
+			worker = self._pieces[1]
+		new_pos = self._update_pos(move, p1_pos)
 		build = self._pick_build(new_pos)
 		return [worker, move, build]
 
@@ -75,6 +77,9 @@ class Heuristic(Player):
     
     
     def _height_score(self, board, pos1, pos2):
+        
+        if board[pos1[0]][pos1[1]][0]  == 3 or board[pos2[0]][pos2[1]][0] == 3:
+            return INFINITY
         return board[pos1[0]][pos1[1]][0] + board[pos2[0]][pos2[1]][0]
     
     def _center_score(self, pos1, pos2):
@@ -104,6 +109,7 @@ class Heuristic(Player):
     
     def _calc_score(self, board, pos1, pos2, pos3, pos4):
         return self._height_score(board, pos1, pos2) + self._center_score(pos1, pos2) + self._dist_score(pos1, pos2, pos3, pos4)
+    
     def choose_move(self, board, pos, moves1, moves2):
         pos1 = pos[self._pieces[0]]
         pos2 = pos[self._pieces[1]]
@@ -114,17 +120,21 @@ class Heuristic(Player):
         maxP = None
         maxS = 0
         for e in moves1:
+            pos1 += self.locs[e]
             score = self._calc_score(board, pos1, pos2, pos3, pos4)
             if score > maxS:
                 maxS = score
                 maxM = e
                 maxP = self._pieces[0]
+            pos1 -= self.locs[e]
         for e in moves2:
+            pos2 += self.locs[e]
             score = self._calc_score(board, pos1, pos2, pos3, pos4)
             if score > maxS:
                 maxS = score
                 maxM = e
                 maxP = self._pieces[1]
+            pos2 -= self.locs[e]
         pos = self._update_pos(maxM, pos[maxP])
         build = self._pick_build(pos)
         return [maxP, maxM, build]
