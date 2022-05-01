@@ -62,7 +62,7 @@ class Random(Player):
 		else:
 			move = choice(p2_moves)
 			worker = self._pieces[1]
-		new_pos = self._update_pos(move, p1_pos)
+		new_pos = self._update_pos(move, p1_pos[worker].copy())
 		build = self._pick_build(new_pos)
 		return [worker, move, build]
 
@@ -111,10 +111,10 @@ class Heuristic(Player):
         return self._height_score(board, pos1, pos2) + self._center_score(pos1, pos2) + self._dist_score(pos1, pos2, pos3, pos4)
     
     def choose_move(self, board, pos, moves1, moves2):
-        pos1 = pos[self._pieces[0]]
-        pos2 = pos[self._pieces[1]]
-        pos3 = pos[self._non[0]]
-        pos4 = pos[self._non[1]]
+        pos1 = pos[self._pieces[0]].copy()
+        pos2 = pos[self._pieces[1]].copy()
+        pos3 = pos[self._non[0]].copy()
+        pos4 = pos[self._non[1]].copy()
         
         maxM = None
         maxP = None
@@ -135,7 +135,7 @@ class Heuristic(Player):
                 maxM = e
                 maxP = self._pieces[1]
             pos2 -= self.locs[e]
-        pos = self._update_pos(maxM, pos[maxP])
+        pos = self._update_pos(maxM, pos[maxP].copy())
         build = self._pick_build(pos)
         return [maxP, maxM, build]
         
