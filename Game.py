@@ -6,6 +6,8 @@ from Players import Player, Random, Heuristic
 class Game():
     #robby sucks
     def __init__(self, p1, p2):
+        
+        self.debug = True
         self._position = Position()
         self._hist = []
         self._fut= []
@@ -42,13 +44,17 @@ class Game():
         return self._position._check_if_winner()
 
 
-    def _wrong_move(self, worker, move, build, board, pos):
+    def _wrong_move(self, worker, move, board, pos):
         x = pos[0]
         y = pos[1]
         players = ['A', 'B', 'Y', 'Z']
         players.remove(worker)
-
-        if move == 'n':
+        new = [0,0]
+        for i in range(2):
+            new[i] = pos[i] + self.locs[move][i]
+        if board[new[0]][new[1]][0] - board[pos[0]][pos[1]][0] > 1:
+            return True
+        elif move == 'n':
             if board[x-1][y][1] in players or board[x-1][y][0] == 4:
                 return True
         elif move == 'ne':
@@ -88,25 +94,32 @@ class Game():
         if move == None:
             return
         if move not in self._position.dirs:
+            self.log("bad move:", move, worker)
             raise InvalidMove()
         g = self._position.pos[worker]
         if (g[0] == 0 and (move == 'n' or move == 'nw' or move == 'ne')):
+            self.log("bad move:", move, worker)
             raise WrongMove()
         if (g[0] == 4 and (move == 's' or move == 'sw' or move == 'se')):
+            self.log("bad move:", move, worker)
             raise WrongMove()
         if (g[1] == 0 and (move == 'w' or move == 'nw' or move == 'sw')):
+            self.log("bad move:", move, worker)
             raise WrongMove()
         if (g[1] == 4 and (move == 'e' or move == 'ne' or move == 'se')):
+            self.log("bad move:", move, worker)
             raise WrongMove()
         #K: check if another player is there or if level 4
         board = self.git_board()
-        if self._wrong_move(worker, move, build, board, g):
+        if self._wrong_move(worker, move, board, g):
+            self.log("bad move:", move, worker)
             raise WrongMove()
         
         
         if build == None:
             return
         if build not in self._position.dirs:
+            self.log("bad build:", move, worker, build)
             raise InvalidBuild()
 
 
@@ -115,6 +128,7 @@ class Game():
         n = self._new_pos(move, temp)
 
         if self._wrong_build(n, board, build, worker):
+            self.log("bad build:", move, worker, build)
             raise WrongBuild()
 
 
@@ -132,6 +146,7 @@ class Game():
         
         bh = b.copy()
         if b[0] < 0 or b[0] > 4 or b[1] > 4 or b[1] < 0:
+            self.log("bad move:", move, worker)
             raise WrongMove()
         
         for i in range(2):
@@ -139,6 +154,7 @@ class Game():
         
         
         if b[0] < 0 or b[0] > 4 or b[1] > 4 or b[1] < 0:
+            self.log("bad build:", move, worker, build)
             raise WrongBuild()
         
         new = Position(self._position)
@@ -191,7 +207,8 @@ class Game():
     def _new_pos(self, move, pos):
         """Returns new pos after move (doesn't actually change board)"""
         p = pos.copy()
-        p += self.locs[move]
+        for i in range(2):
+            p[i] += self.locs[move][i]
         return p
 
     def git_curr_player(self):
@@ -252,7 +269,12 @@ class Game():
         x = g[0]
         y = g[1]
         for move in moves:
-            if move == 'n':
+            new = [0, 0]
+            new[0] = g[0] + self.locs[move][0]
+            new[1] =  g[1] + self.locs[move][1]
+            if board[new[0]][new[1]][0] - board[g[0]][g[1]][0] > 1:
+                moves.remove(move)
+            elif move == 'n':
                 if board[x-1][y][1] != ' ' or board[x-1][y][0] == 4:
                     moves.remove('n')
             elif move == 'ne':
@@ -310,6 +332,12 @@ class Game():
             raise InvalidWorker()
         return self._position.pos[worker]
 
+    def log(self, message, *args):
+        if self.debug:
+            print(message)
+            print(args)
+     
+     
             
         
             

@@ -24,7 +24,7 @@ class Player():
 		pos+= self.locs[move]
 		return pos
 	
-	def _pick_build(self, pos):
+	def _pick_build(self, pos, board):
 		moves = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw']
 		g = pos
 		if g[0] == 0:
@@ -47,6 +47,33 @@ class Player():
 				moves.remove('nw')
 			if 'se' in moves:
 				moves.remove('sw')
+		x = g[0]
+		y = g[1]
+		for move in moves:
+			if move == 'n':
+				if board[x-1][y][1] != ' ' or board[x-1][y][0] == 4:
+					moves.remove('n')
+			elif move == 'ne':
+				if board[x-1][y+1][1] != ' ' or board[x-1][y+1][0] == 4:
+					moves.remove('ne')
+			elif move == 'e':
+				if board[x][y+1][1] != ' ' or board[x][y+1][0] == 4:
+					moves.remove('e')
+			elif move == 'se':
+				if board[x+1][y+1][1] != ' ' or board[x+1][y+1][0] == 4:
+					moves.remove('se')
+			elif move == 's':
+				if board[x+1][y][1] != ' ' or board[x+1][y][0] == 4:
+					moves.remove('s')
+			elif move == 'sw':
+				if board[x+1][y-1][1] != ' ' or board[x+1][y-1][0] == 4:
+					moves.remove('sw')
+			elif move == 'w':
+				if board[x][y-1][1] != ' ' or board[x][y-1][0] == 4:
+					moves.remove('w')
+			elif move == 'nw':
+				if board[x-1][y-1][1] != ' ' or board[x-1][y-1][0] == 4:
+					moves.remove('nw')
 		return choice(moves)
 
 	
@@ -63,7 +90,7 @@ class Random(Player):
 			move = choice(p2_moves)
 			worker = self._pieces[1]
 		new_pos = self._update_pos(move, p1_pos[worker].copy())
-		build = self._pick_build(new_pos)
+		build = self._pick_build(new_pos, board)
 		return [worker, move, build]
 
 
@@ -140,7 +167,7 @@ class Heuristic(Player):
             for i in range(2):
                 pos2[i] -= self.locs[e][i]
         pos = self._update_pos(maxM, pos[maxP].copy())
-        build = self._pick_build(pos)
+        build = self._pick_build(pos, board)
         return [maxP, maxM, build]
         
         
