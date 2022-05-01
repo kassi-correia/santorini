@@ -7,6 +7,7 @@ class Game():
     #robby sucks
     def __init__(self, p1, p2):
         
+        #Change debug to FALSE before submitting, it will print out info when an exception is raised
         self.debug = True
         self._position = Position()
         self._hist = []
