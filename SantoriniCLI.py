@@ -94,7 +94,7 @@ class SantoriniCLI():
                 while not worker:
                     try:
                         #add method to check if either worker can move
-                        if self._game.cant_move:
+                        if self._game.cant_move == True:
                             print(f"""{self._game.get_winner()} has won""")
                             sys.exit()
                         print("Select a worker to move")
