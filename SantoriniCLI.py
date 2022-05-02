@@ -25,7 +25,7 @@ class SantoriniCLI():
         else:
              self.blue_type = 'f'
 
-        self._game = Game(self.white_type, self.blue_type)
+        self._game = Game(self.white_type, self.blue_type, self._score)
 
 
 
@@ -94,6 +94,9 @@ class SantoriniCLI():
                 while not worker:
                     try:
                         #add method to check if either worker can move
+                        if self._game.cant_move:
+                            print(f"""{self._game.get_winner()} has won""")
+                            sys.exit()
                         print("Select a worker to move")
                         worker = input("")
                         self._game.make_move(worker)
@@ -134,7 +137,9 @@ class SantoriniCLI():
                 result = self._game.ai_move()
                 if result != ['L', 'L', 'L']:
                     print(f"{result[0][0]},{result[0][1]},{result[0][2]}")
-
+                else:
+                    print(f"""{self._game.get_winner()} has won""")
+                    sys.exit()
             self._turn_num += 1
         self._display_board()
         self._display_turn()

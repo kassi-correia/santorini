@@ -7,7 +7,7 @@ INFINITY = 300
 
 class Game():
 
-    def __init__(self, p1, p2):
+    def __init__(self, p1, p2, score):
         
         #Change debug to FALSE before submitting, it will print out info when an exception is raised
         self.debug = False
@@ -16,7 +16,9 @@ class Game():
         self._fut= []
         self.p1 = p1
         self.p2 = p2
+        self.score=score
         self.workers = ['A', 'B', 'Y', 'Z']
+        self._winner = ""
         
         self.locs = dict()
         self.locs['n'] = [-1, 0]
@@ -44,7 +46,7 @@ class Game():
         return self._position.board
 
     def _check_if_winner(self):
-        return self._position._check_if_winner()
+        return self._position._check_if_winner(self._winner)
     
     def git_score(self):
         board = self.git_board()
@@ -134,15 +136,33 @@ class Game():
             return False
 
 
+    def cant_move(self):
+        board = self.git_board
+        if self._position.turn == 'w':
+            if self._position.turn == 'w':
+                p1_moves = self.git_moves('A', board)
+                p2_moves = self.git_moves('B', board)
+            else:
+                p1_moves = self.git_moves('Y', board)
+                p2_moves = self.git_moves('Z', board)
+            if p1_moves == [] and p2_moves == []:
+                return True
+        else:
+            return False
+            
 
-
+    def get_winner(self):
+        return self._winner
     
     def make_move(self, worker, move = None, build = None):
         if worker == 'L' and move == 'L' and build == 'L':
             if self._position.turn == 'w':
-                self._position._check_if_winner('blue')
+                self._winner = 'blue'
+                return
             else: 
-                self._position._check_if_winner('white')
+                self._winner = 'white'
+                return
+            
 
         if worker not in self.workers:
             raise InvalidWorker()
@@ -326,6 +346,7 @@ class Game():
             p1_moves = self.git_moves('Y', board)
             p2_moves = self.git_moves('Z', board)
         if p1_moves == [] and p2_moves == []:
+            self.make_move('L', 'L', 'L')
             return ['L', 'L', 'L']
         result = p.choose_move(board, self._position.pos, p1_moves, p2_moves)
         self.make_move(result[0][0], result[0][1], result[0][2])
@@ -459,6 +480,7 @@ class Position():
             self.pieces = arg.pieces.copy()
             self.dirs = arg.dirs.copy()
             self.pos = arg.pos.copy()
+            self._winner = None
         else:
             self.board = [[[0, ' '],[0, ' '],[0, ' '],[0, ' '],[0, ' ']],
 						[[0, ' '],[0, 'Y'],[0, ' '],[0, 'B'],[0, ' ']],
@@ -498,9 +520,9 @@ class Position():
     def build(self, x, y):
         self.board[x][y][0] += 1
 
-    def _check_if_winner(self, name=None):
-        if name:
-            return name
+    def _check_if_winner(self, win):
+        if win != "":
+            return win
         for row in self.board:
             for pos in row:
                 if pos[0] == 3 and pos[1] != ' ':
