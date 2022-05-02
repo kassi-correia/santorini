@@ -10,7 +10,6 @@ from Exception import InvalidArgs
 
 if __name__ == "__main__":
     try:
-        print("running...")
         if (len(sys.argv)) > 5 or (len(sys.argv)) < 1:
             raise InvalidArgs()
 

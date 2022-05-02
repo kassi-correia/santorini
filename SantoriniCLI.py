@@ -9,7 +9,7 @@ class SantoriniCLI():
         self._blue = blue
         self._undo = undo
         self._score = score
-        self._turn_num = 0
+        self._turn_num = 1
 
         if self._white == 'human':
             self.white_type = 'h'
@@ -32,8 +32,7 @@ class SantoriniCLI():
     def _display_board(self):
         """Prints current board standing."""
         board = self._game.git_board()
-        print(f"""
-+--+--+--+--+--+
+        print(f"""+--+--+--+--+--+
 |{board[0][0][0]}{board[0][0][1]}|{board[0][1][0]}{board[0][1][1]}|{board[0][2][0]}{board[0][2][1]}|{board[0][3][0]}{board[0][3][1]}|{board[0][4][0]}{board[0][4][1]}|
 +--+--+--+--+--+
 |{board[1][0][0]}{board[1][0][1]}|{board[1][1][0]}{board[1][1][1]}|{board[1][2][0]}{board[1][2][1]}|{board[1][3][0]}{board[1][3][1]}|{board[1][4][0]}{board[1][4][1]}|
@@ -43,14 +42,13 @@ class SantoriniCLI():
 |{board[3][0][0]}{board[3][0][1]}|{board[3][1][0]}{board[3][1][1]}|{board[3][2][0]}{board[3][2][1]}|{board[3][3][0]}{board[3][3][1]}|{board[3][4][0]}{board[3][4][1]}|
 +--+--+--+--+--+
 |{board[4][0][0]}{board[4][0][1]}|{board[4][1][0]}{board[4][1][1]}|{board[4][2][0]}{board[4][2][1]}|{board[4][3][0]}{board[4][3][1]}|{board[4][4][0]}{board[4][4][1]}|
-+--+--+--+--+--+
-        """)
++--+--+--+--+--+""")
         pass
 
 
     def _display_turn(self):
         z = self._game.git_curr_player()
-        print(f"Turn {self._turn_num} {z}")
+        print(f"Turn: {self._turn_num}, {z}")
 
     def _check_if_winner(self):
         """Returns false if no winner, or returns 'blue' or 'white' if one
