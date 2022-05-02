@@ -145,8 +145,12 @@ class Game():
             else:
                 p1_moves = self.git_moves('Y', board)
                 p2_moves = self.git_moves('Z', board)
-            if p1_moves == [] and p2_moves == []:
-                return True
+        if p1_moves == [] and p2_moves == []:
+            if self._position.turn == 'w':
+                self._winner = 'blue'
+            else:
+                self._winner = 'white'
+            return True
         else:
             return False
             
