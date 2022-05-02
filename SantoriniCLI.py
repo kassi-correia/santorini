@@ -106,7 +106,7 @@ class SantoriniCLI():
                         build = None
             else:
                 result = self._game.ai_move()
-                print(f"{result[0]},{result[1]},{result[2]}")
+                print(f"{result[0][0]},{result[0][1]},{result[0][2]}")
 
 
             self._turn_num += 1

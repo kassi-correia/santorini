@@ -239,7 +239,7 @@ class Game():
             p1_moves = self.git_moves('Y', board)
             p2_moves = self.git_moves('Z', board)
         result = p.choose_move(board, self._position.pos, p1_moves, p2_moves)
-        self.make_move(result[0], result[1], result[2])
+        self.make_move(result[0][0], result[0][1], result[0][2])
         return result
 
 

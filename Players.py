@@ -93,7 +93,7 @@ class Random(Player):
 			worker = self._pieces[1]
 		new_pos = self._update_pos(move, p1_pos[worker].copy())
 		build = self._pick_build(new_pos, board)
-		return [worker, move, build]
+		return [[worker, move, build]]
 
 
 
@@ -137,7 +137,7 @@ class Heuristic(Player):
         return 8 - (min(dist13, dist23) + min(dist14, dist24))
     
     def _calc_score(self, board, pos1, pos2, pos3, pos4):
-        return self._height_score(board, pos1, pos2) + self._center_score(pos1, pos2) + self._dist_score(pos1, pos2, pos3, pos4)
+        return [self._height_score(board, pos1, pos2), self._center_score(pos1, pos2), self._dist_score(pos1, pos2, pos3, pos4)]
     
     def choose_move(self, board, pos, moves1, moves2):
         pos1 = pos[self._pieces[0]].copy()
@@ -148,11 +148,14 @@ class Heuristic(Player):
         maxM = None
         maxP = None
         maxS = 0
+        maxLs
         for e in moves1:
             for i in range(2):
                 pos1[i] += self.locs[e][i]
-            score = self._calc_score(board, pos1, pos2, pos3, pos4)
+            ls = self._calc_score(board, pos1, pos2, pos3, pos4)
+            score = sum(ls)
             if score > maxS:
+                maxLs = ls
                 maxS = score
                 maxM = e
                 maxP = self._pieces[0]
@@ -161,8 +164,10 @@ class Heuristic(Player):
         for e in moves2:
             for i in range(2):
                 pos2[i] += self.locs[e][i]
-            score = self._calc_score(board, pos1, pos2, pos3, pos4)
+            ls = self._calc_score(board, pos1, pos2, pos3, pos4)
+            score = sum(ls)
             if score > maxS:
+                maxLs = ls
                 maxS = score
                 maxM = e
                 maxP = self._pieces[1]
@@ -170,7 +175,7 @@ class Heuristic(Player):
                 pos2[i] -= self.locs[e][i]
         pos = self._update_pos(maxM, pos[maxP].copy())
         build = self._pick_build(pos, board)
-        return [maxP, maxM, build]
+        return [[maxP, maxM, build], maxLs]
         
         
         
