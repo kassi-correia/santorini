@@ -228,6 +228,12 @@ class Game():
         players = ['A', 'B', 'Y', 'Z']
         players.remove(worker)
         move = build
+        for i in range(2):
+            pos[i] += self.locs[move][i]
+        if pos[0] < 0 or pos[1] > 4 or pos[0] > 4 or pos[1] < 0:
+            return True
+        for i in range(2):
+            pos[i] -= self.locs[move][i]
         if move == 'n':
             if board[x-1][y][1] in players or board[x-1][y][0] == 4:
                 return True
