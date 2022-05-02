@@ -1,1 +1,1 @@
-print("lol")
+import tkinter as tk
