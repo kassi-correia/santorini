@@ -48,7 +48,14 @@ class SantoriniCLI():
 
     def _display_turn(self):
         z = self._game.git_curr_player()
-        print(f"Turn: {self._turn_num}, {z}")
+        
+        # print score
+        if self._score == 'on':
+            s = self._game.git_score()
+            print(f"Turn: {self._turn_num}, {z}, ({s[0]}, {s[1]}, {s[2]})")
+        else:
+            print(f"Turn: {self._turn_num}, {z}")
+
 
     def _check_if_winner(self):
         """Returns false if no winner, or returns 'blue' or 'white' if one
@@ -61,6 +68,25 @@ class SantoriniCLI():
         while not self._check_if_winner():
             self._display_board()
             self._display_turn()
+            if self._undo == 'on':
+                next = None
+                while not next:
+                    print("undo, redo, or next")
+                    reply = input("")
+                    if reply == 'next':
+                        #break
+                        next = 'next'
+                    elif reply == 'undo':
+                        u = self._game.undo()
+                        self._turn_num -= u
+                        self._display_board()
+                        self._display_turn()
+                    elif reply == 'redo':
+                        u = self._game.redo()
+                        self._turn_num += u
+                        self._display_board()
+                        self._display_turn()
+
             worker = None
             move = None
             build = None
@@ -110,7 +136,6 @@ class SantoriniCLI():
 
 
             self._turn_num += 1
-            #self._display_move
 
         print(f"""{self._check_if_winner()} has won""")
         sys.exit()

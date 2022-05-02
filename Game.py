@@ -3,8 +3,10 @@ from Exception import InvalidBuild, InvalidMove, InvalidRedo, InvalidUndo, Inval
 import copy
 from Players import Player, Random, Heuristic
 
+INFINITY = 300
+
 class Game():
-    #robby sucks
+
     def __init__(self, p1, p2):
         
         #Change debug to FALSE before submitting, it will print out info when an exception is raised
@@ -43,6 +45,56 @@ class Game():
 
     def _check_if_winner(self):
         return self._position._check_if_winner()
+    
+    def git_score(self):
+        board = self.git_board()
+        p = self.git_curr_player
+        if p == 'white (AB)':
+            pos1 = self._position.pos['A']
+            pos2 = self._position.pos['B']
+            pos3 = self._position.pos['Y']
+            pos4 = self._position.pos['Z']
+        else:
+            pos1 = self._position.pos['Y']
+            pos2 = self._position.pos['Z']
+            pos3 = self._position.pos['A']
+            pos4 = self._position.pos['B']
+        return [self._height_score(board, pos1, pos2), self._center_score(pos1, pos2), self._dist_score(pos1, pos2, pos3, pos4)]
+        
+
+
+    def _height_score(self, board, pos1, pos2):
+        
+        if board[pos1[0]][pos1[1]][0]  == 3 or board[pos2[0]][pos2[1]][0] == 3:
+            return INFINITY
+        return board[pos1[0]][pos1[1]][0] + board[pos2[0]][pos2[1]][0]
+    
+    def _center_score(self, pos1, pos2):
+        ret = 0
+        if pos1 == [2,2]:
+            ret = 2
+        elif 0 in pos1 or 4 in pos1:
+            ret += 0
+        else:
+            ret += 1
+        if pos2 == [2,2]:
+            ret += 2
+        elif 0 in pos2 or 4 in pos2:
+            ret += 0
+        else:
+            ret += 1
+        return ret
+    
+    def _dist_score(self, pos1, pos2, pos3, pos4):
+        
+        dist13 = min(max(pos1[0] - pos3[0], pos3[0]-pos1[0]), max(pos1[1] - pos3[1], pos3[1]-pos1[1]))
+        dist14 = min(max(pos1[0] - pos4[0], pos4[0]-pos1[0]), max(pos1[1] - pos4[1], pos4[1]-pos1[1]))
+        dist24 = min(max(pos2[0] - pos4[0], pos4[0]-pos2[0]), max(pos2[1] - pos4[1], pos4[1]-pos2[1]))
+        dist23 = min(max(pos2[0] - pos3[0], pos3[0]-pos2[0]), max(pos2[1] - pos3[1], pos3[1]-pos2[1]))
+        
+        return 8 - (min(dist13, dist23) + min(dist14, dist24))
+    
+        
 
 
     def _wrong_move(self, worker, move, board, pos):
@@ -165,7 +217,8 @@ class Game():
             new.turn = 'w'
         else:
             new.turn = 'b'
-        
+
+        self._fut = []
         self._hist.append(self._position)
         self._position = new
         
@@ -202,6 +255,36 @@ class Game():
                 return True
         else:
             return False
+
+    def undo(self):
+        if self._hist == []:
+            return 0
+        else:
+            self._fut.append(self._position)
+            curr_pos = self._hist.pop()
+            self._position = curr_pos
+            if self._position.turn == 'w':
+                self._position.turn == 'b'
+            else:
+                self._position.turn == 'w'
+            return 1
+
+
+
+    def redo(self):
+        if self._fut == []:
+            return 0
+        else:
+            self._hist.append(self._position)
+            curr_pos = self._fut.pop()
+            self._position = curr_pos
+            if self._position.turn == 'w':
+                self._position.turn == 'b'
+            else:
+                self._position.turn == 'w'
+            return 1
+
+    
 
 
 
