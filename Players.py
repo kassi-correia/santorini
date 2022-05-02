@@ -30,6 +30,7 @@ class Player():
 	def _pick_build(self, pos, board):
 		moves = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw']
 		players = ['A', 'B', 'Y', 'Z']
+		print(self._curr_piece)
 		players.remove(self._curr_piece)
 		g = pos
 		if g[0] == 0:
@@ -203,6 +204,7 @@ class Heuristic(Player):
             for i in range(2):
                 pos2[i] -= self.locs[e][i]
         pos = self._update_pos(maxM, pos[maxP].copy())
+        self._curr_piece = maxP
         build = self._pick_build(pos, board)
         return [[maxP, maxM, build], maxLs]
         
