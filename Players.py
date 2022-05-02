@@ -129,10 +129,10 @@ class Heuristic(Player):
     
     def _dist_score(self, pos1, pos2, pos3, pos4):
         
-        dist13 = min(max(pos1[0] - pos3[0], pos3[0]-pos1[0]), max(pos1[1] - pos3[1], pos3[1]-pos1[1]))
-        dist14 = min(max(pos1[0] - pos4[0], pos4[0]-pos1[0]), max(pos1[1] - pos4[1], pos4[1]-pos1[1]))
-        dist24 = min(max(pos2[0] - pos4[0], pos4[0]-pos2[0]), max(pos2[1] - pos4[1], pos4[1]-pos2[1]))
-        dist23 = min(max(pos2[0] - pos3[0], pos3[0]-pos2[0]), max(pos2[1] - pos3[1], pos3[1]-pos2[1]))
+        dist13 = max(max(pos1[0] - pos3[0], pos3[0]-pos1[0]), max(pos1[1] - pos3[1], pos3[1]-pos1[1]))
+        dist14 = max(max(pos1[0] - pos4[0], pos4[0]-pos1[0]), max(pos1[1] - pos4[1], pos4[1]-pos1[1]))
+        dist24 = max(max(pos2[0] - pos4[0], pos4[0]-pos2[0]), max(pos2[1] - pos4[1], pos4[1]-pos2[1]))
+        dist23 = max(max(pos2[0] - pos3[0], pos3[0]-pos2[0]), max(pos2[1] - pos3[1], pos3[1]-pos2[1]))
         
         return 8 - (min(dist13, dist23) + min(dist14, dist24))
     
