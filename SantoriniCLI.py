@@ -64,7 +64,6 @@ class SantoriniCLI():
     
     def run(self):      
         """Initialize game"""
-        #while not win
         while not self._check_if_winner():
             self._display_board()
             self._display_turn()
@@ -94,6 +93,7 @@ class SantoriniCLI():
             if self._game.git_type_player() == 'h':
                 while not worker:
                     try:
+                        #add method to check if either worker can move
                         print("Select a worker to move")
                         worker = input("")
                         self._game.make_move(worker)
@@ -132,11 +132,12 @@ class SantoriniCLI():
                         build = None
             else:
                 result = self._game.ai_move()
-                print(f"{result[0][0]},{result[0][1]},{result[0][2]}")
-
+                if result != ['L', 'L', 'L']:
+                    print(f"{result[0][0]},{result[0][1]},{result[0][2]}")
 
             self._turn_num += 1
-
+        self._display_board()
+        self._display_turn()
         print(f"""{self._check_if_winner()} has won""")
         sys.exit()
 

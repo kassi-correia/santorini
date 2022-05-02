@@ -10,7 +10,7 @@ class Game():
     def __init__(self, p1, p2):
         
         #Change debug to FALSE before submitting, it will print out info when an exception is raised
-        self.debug = True
+        self.debug = False
         self._position = Position()
         self._hist = []
         self._fut= []
@@ -138,6 +138,12 @@ class Game():
 
     
     def make_move(self, worker, move = None, build = None):
+        if worker == 'L' and move == 'L' and build == 'L':
+            if self._position.turn == 'w':
+                self._position._check_if_winner('blue')
+            else: 
+                self._position._check_if_winner('white')
+
         if worker not in self.workers:
             raise InvalidWorker()
         turn = self._position.turn
@@ -161,13 +167,13 @@ class Game():
         if (g[1] == 4 and (move == 'e' or move == 'ne' or move == 'se')):
             self.log("bad move:", move, worker)
             raise WrongMove()
-        #K: check if another player is there or if level 4
+
         board = self.git_board()
         if self._wrong_move(worker, move, board, g):
             self.log("bad move:", move, worker)
             raise WrongMove()
         
-        
+
         if build == None:
             return
         if build not in self._position.dirs:
@@ -175,19 +181,12 @@ class Game():
             raise InvalidBuild()
 
 
-        # check if another player is there or if level 4 before build?
         temp = g.copy()
         n = self._new_pos(move, temp)
 
         if self._wrong_build(n, board, build, worker):
             self.log("bad build:", move, worker, build)
             raise WrongBuild()
-
-
-
-
-
-
 
         c = self._position.pos[worker]
         b = []
@@ -326,6 +325,8 @@ class Game():
         else:
             p1_moves = self.git_moves('Y', board)
             p2_moves = self.git_moves('Z', board)
+        if p1_moves == [] and p2_moves == []:
+            return ['L', 'L', 'L']
         result = p.choose_move(board, self._position.pos, p1_moves, p2_moves)
         self.make_move(result[0][0], result[0][1], result[0][2])
         return result
@@ -497,11 +498,13 @@ class Position():
     def build(self, x, y):
         self.board[x][y][0] += 1
 
-    def _check_if_winner(self):
+    def _check_if_winner(self, name=None):
+        if name:
+            return name
         for row in self.board:
             for pos in row:
                 if pos[0] == 3 and pos[1] != ' ':
-                    if pos[1] == 'Y'or 'Z':
+                    if pos[1] == 'Y' or pos[1] == 'Z':
                         return 'blue'
                     else:
                         return 'white'

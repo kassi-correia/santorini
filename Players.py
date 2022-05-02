@@ -13,6 +13,7 @@ class Player():
 		self.locs['s'] = [1, 0]
 		self.locs['se'] = [1, 1]
 		self.locs['e'] = [0, 1]
+		self._curr_piece = None
 		if color == 'white':
 			self._pieces= ['A','B']
 			self._non = ['Y', 'Z']
@@ -28,6 +29,8 @@ class Player():
 	
 	def _pick_build(self, pos, board):
 		moves = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw']
+		players = ['A', 'B', 'Y', 'Z']
+		players.remove(self._curr_piece)
 		g = pos
 		if g[0] == 0:
 			moves.remove('n')
@@ -58,39 +61,39 @@ class Player():
 			new = [0, 0]
 			new[0] = g[0] + self.locs[move][0]
 			new[1] =  g[1] + self.locs[move][1]
-			if board[new[0]][new[1]][0] - board[g[0]][g[1]][0] > 1:
-				moves.remove(move)
-				remo = True
-			elif move == 'n':
-				if board[x-1][y][1] != ' ' or board[x-1][y][0] == 4:
+			# if board[new[0]][new[1]][0] - board[g[0]][g[1]][0] > 1:
+			# 	moves.remove(move)
+			# 	remo = True
+			if move == 'n':
+				if board[x-1][y][1] in players or board[x-1][y][0] == 4:
 					moves.remove('n')
 					remo = True
 			elif move == 'ne':
-				if board[x-1][y+1][1] != ' ' or board[x-1][y+1][0] == 4:
+				if board[x-1][y+1][1] in players or board[x-1][y+1][0] == 4:
 					moves.remove('ne')
 					remo = True
 			elif move == 'e':
-				if board[x][y+1][1] != ' ' or board[x][y+1][0] == 4:
+				if board[x][y+1][1] in players or board[x][y+1][0] == 4:
 					moves.remove('e')
 					remo = True
 			elif move == 'se':
-				if board[x+1][y+1][1] != ' ' or board[x+1][y+1][0] == 4:
+				if board[x+1][y+1][1] in players or board[x+1][y+1][0] == 4:
 					moves.remove('se')
 					remo = True
 			elif move == 's':
-				if board[x+1][y][1] != ' ' or board[x+1][y][0] == 4:
+				if board[x+1][y][1] in players or board[x+1][y][0] == 4:
 					moves.remove('s')
 					remo = True
 			elif move == 'sw':
-				if board[x+1][y-1][1] != ' ' or board[x+1][y-1][0] == 4:
+				if board[x+1][y-1][1] in players or board[x+1][y-1][0] == 4:
 					moves.remove('sw')
 					remo = True
 			elif move == 'w':
-				if board[x][y-1][1] != ' ' or board[x][y-1][0] == 4:
+				if board[x][y-1][1] in players or board[x][y-1][0] == 4:
 					moves.remove('w')
 					remo = True
 			elif move == 'nw':
-				if board[x-1][y-1][1] != ' ' or board[x-1][y-1][0] == 4:
+				if board[x-1][y-1][1] in players or board[x-1][y-1][0] == 4:
 					moves.remove('nw')
 					remo = True
 			if not remo:
@@ -103,13 +106,20 @@ class Random(Player):
 	
 	def choose_move(self, board, p1_pos, p1_moves, p2_moves):
 		"""Returns list with worker, move, and build to be played"""
-		# choice() randomly picks item from list
-		if choice([False,True]):
+		if p1_moves == []:
+			worker = self._pieces[1]
+			move = choice(p2_moves)
+		elif p2_moves == []:
 			worker = self._pieces[0]
 			move = choice(p1_moves)
 		else:
-			move = choice(p2_moves)
-			worker = self._pieces[1]
+			if choice([False,True]):
+				worker = self._pieces[0]
+				move = choice(p1_moves)
+			else:
+				move = choice(p2_moves)
+				worker = self._pieces[1]
+		self._curr_piece = worker
 		new_pos = self._update_pos(move, p1_pos[worker].copy())
 		build = self._pick_build(new_pos, board)
 		return [[worker, move, build]]
