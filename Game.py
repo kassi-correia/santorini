@@ -323,6 +323,7 @@ class Game():
         if self._position.turn == 'w':
             p1_moves = self.git_moves('A', board)
             p2_moves = self.git_moves('B', board)
+            print(p1_moves, p2_moves)
         else:
             p1_moves = self.git_moves('Y', board)
             p2_moves = self.git_moves('Z', board)
@@ -357,36 +358,55 @@ class Game():
         # K: remove spot if it is occupied or if its level 4
         x = g[0]
         y = g[1]
-        for move in moves:
+        i = 0
+        print("start", worker, moves)
+        while i < len(moves):
+            remo = False
+            move = moves[i]
             new = [0, 0]
             new[0] = g[0] + self.locs[move][0]
             new[1] =  g[1] + self.locs[move][1]
             if board[new[0]][new[1]][0] - board[g[0]][g[1]][0] > 1:
                 moves.remove(move)
+                remo = True
             elif move == 'n':
                 if board[x-1][y][1] != ' ' or board[x-1][y][0] == 4:
                     moves.remove('n')
+                    remo = True
             elif move == 'ne':
                 if board[x-1][y+1][1] != ' ' or board[x-1][y+1][0] == 4:
                     moves.remove('ne')
+                    remo = True
             elif move == 'e':
                 if board[x][y+1][1] != ' ' or board[x][y+1][0] == 4:
                     moves.remove('e')
+                    remo = True
             elif move == 'se':
                 if board[x+1][y+1][1] != ' ' or board[x+1][y+1][0] == 4:
                     moves.remove('se')
+                    remo = True
             elif move == 's':
                 if board[x+1][y][1] != ' ' or board[x+1][y][0] == 4:
                     moves.remove('s')
+                    remo = True
             elif move == 'sw':
+                print("sw", x, y)
                 if board[x+1][y-1][1] != ' ' or board[x+1][y-1][0] == 4:
                     moves.remove('sw')
+                    remo = True
             elif move == 'w':
+                print("w", x,y)
                 if board[x][y-1][1] != ' ' or board[x][y-1][0] == 4:
                     moves.remove('w')
+                    remo = True
             elif move == 'nw':
                 if board[x-1][y-1][1] != ' ' or board[x-1][y-1][0] == 4:
                     moves.remove('nw')
+                    remo = True
+            if not remo:
+                i+= 1
+        self.log(moves)
+        print("end", worker)
         return moves
 
     def git_build(self, worker):
