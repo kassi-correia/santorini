@@ -323,7 +323,6 @@ class Game():
         if self._position.turn == 'w':
             p1_moves = self.git_moves('A', board)
             p2_moves = self.git_moves('B', board)
-            print(p1_moves, p2_moves)
         else:
             p1_moves = self.git_moves('Y', board)
             p2_moves = self.git_moves('Z', board)
@@ -359,7 +358,6 @@ class Game():
         x = g[0]
         y = g[1]
         i = 0
-        print("start", worker, moves)
         while i < len(moves):
             remo = False
             move = moves[i]
@@ -390,12 +388,10 @@ class Game():
                     moves.remove('s')
                     remo = True
             elif move == 'sw':
-                print("sw", x, y)
                 if board[x+1][y-1][1] != ' ' or board[x+1][y-1][0] == 4:
                     moves.remove('sw')
                     remo = True
             elif move == 'w':
-                print("w", x,y)
                 if board[x][y-1][1] != ' ' or board[x][y-1][0] == 4:
                     moves.remove('w')
                     remo = True
@@ -406,7 +402,6 @@ class Game():
             if not remo:
                 i+= 1
         self.log(moves)
-        print("end", worker)
         return moves
 
     def git_build(self, worker):
