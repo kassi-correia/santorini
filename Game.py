@@ -48,7 +48,7 @@ class Game():
     
     def git_score(self):
         board = self.git_board()
-        p = self.git_curr_player
+        p = self.git_curr_player()
         if p == 'white (AB)':
             pos1 = self._position.pos['A']
             pos2 = self._position.pos['B']
