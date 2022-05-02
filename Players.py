@@ -148,7 +148,7 @@ class Heuristic(Player):
         maxM = None
         maxP = None
         maxS = 0
-        maxLs
+        maxLs = None
         for e in moves1:
             for i in range(2):
                 pos1[i] += self.locs[e][i]
