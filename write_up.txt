@@ -17,8 +17,9 @@ the current position is appended to the future list, before it is updated to the
 The future list is cleared after every turn. If the history or future lists are empty, nothing happens. 
 
 4. State: To handle the different types of AI players, we used the state design pattern. The PlayerContext class acts
-as the context manager which sets its state as one of the types of players. The CLI then calls on the context manager to
-choose a move, which the context managewr passes to its state.
+as the context interface which sets its state as one of the types of players. The CLI holds a PlayerContext object and asks
+it to change its state to whichever type of AI player needs to make a move. Then, CLI/Game asks the PlayerContext object to 
+make a move, for which the PlayerContext object tells its state to make a move, and it returns the result.
 
 
 Kassi:
