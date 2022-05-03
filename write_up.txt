@@ -1,9 +1,31 @@
+Design patterns:
+
+1. Singleton: We implemented the Singleton design pattern so that there is only ever one SantoriniCLI
+object created. The constructor of SantoriniCLI is private, and there is a private instance variable
+of itself. There is also a get_instance method to return the private instance variable of itself.
+
+2. Observer: Each player functions as an observer, and each player's pieces functions as a subject.
+When a player moves a piece, the location of the piece updates. When a piece moves, it broacasts the level of
+its new location to the player (subject), which can then notify that that player has won if the piece is on a 
+level 3 building.
+
+3. Command: We implemented a Command class which stores two lists: a history of states and a future
+of states, and can call the undo() and redo() methods. Each position of the board (incl. worker locations
+and building heights) is stored in the history list. If undo() is called, the current position is appended
+to the future list, before it is is updated to the last element of the history list. If redo() is called,
+the current position is appended to the future list, before it is updated to the last element of the future list.
+The future list is cleared after every turn. If the history or future lists are empty, nothing happens. 
+
+4. Iterator:
+
+
 Kassi:
 
-
+In this assignment I learned how to successfully pair program with GitHub, and how
+to navigate GitHub through the terminal. I learned how to implement the observer
+and singleton design patterns. I also learned how to build off of the previous 
+CLI from our BankCLI assignment to build a more complex CLI.
 
 Robby:
 
 Kassi made this assignment very challenging to complete.
-
-Design patterns:
