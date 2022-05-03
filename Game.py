@@ -1,7 +1,7 @@
 
 from Exception import InvalidBuild, InvalidMove, InvalidRedo, InvalidUndo, InvalidWorker, WrongBuild, WrongMove, WrongWorker
 import copy
-from Players import Player, Random, Heuristic
+from Players import Player, Random, Heuristic, PlayerContext
 
 INFINITY = 300
 
@@ -29,17 +29,6 @@ class Game():
         self.locs['s'] = [1, 0]
         self.locs['se'] = [1, 1]
         self.locs['e'] = [0, 1]
-        
-
-        if p1 == 'r':
-            self.white_player = Random('white')
-        elif p1 == 'f':
-            self.white_player = Heuristic('white')
-        
-        if p2 == 'r':
-            self.blue_player = Random('blue')
-        elif p2 == 'f':
-            self.blue_player = Heuristic('blue')
 
     
     def git_board(self):
@@ -333,14 +322,8 @@ class Game():
             return self.p1 
         return self.p2
 
-    def git_player_obj(self):
-        if self.git_curr_player() == 'white (AB)':
-            return self.white_player
-        else:
-             return self.blue_player
 
-    def ai_move(self):
-        p = self.git_player_obj()
+    def ai_move(self, p: PlayerContext):
         board = self.git_board()
         # pass in position and possible moves for each worker
         if self._position.turn == 'w':

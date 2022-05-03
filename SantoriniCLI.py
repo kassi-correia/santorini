@@ -1,6 +1,7 @@
 import sys
 from Exception import InvalidMove, InvalidBuild, InvalidWorker, WrongMove, WrongBuild, WrongWorker
 from Game import Game
+from Players import PlayerContext
 
 class SantoriniCLI():
 
@@ -10,7 +11,7 @@ class SantoriniCLI():
         self._undo = undo
         self._score = score
         self._turn_num = 1
-
+        self._context = PlayerContext()
         if self._white == 'human':
             self.white_type = 'h'
         elif self._white == 'random':
@@ -134,7 +135,11 @@ class SantoriniCLI():
                         print(f"Cannot build {build}")
                         build = None
             else:
-                result = self._game.ai_move()
+                if self._game.git_curr_player()[0] == 'w':
+                    self._context.set_state(self._white, 'white')
+                else:
+                    self._context.set_state(self._blue, 'blue')
+                result = self._game.ai_move(self._context)
                 if result != ['L', 'L', 'L']:
                     print(f"{result[0][0]},{result[0][1]},{result[0][2]}")
                 else:

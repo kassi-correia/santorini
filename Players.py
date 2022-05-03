@@ -211,3 +211,16 @@ class Heuristic(Player):
         
         
         
+class PlayerContext():
+    
+    def __init__(self):
+        self._state = None
+    
+    def set_state(self, typed, color):
+        if typed == 'heuristic':
+            self._state = Heuristic(color)
+        elif typed == 'random':
+            self._state = Random(color)
+    
+    def choose_move(self, board, pos, moves1, moves2):
+        return self._state.choose_move(board, pos, moves1, moves2)
