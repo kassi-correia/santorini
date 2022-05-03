@@ -14,19 +14,19 @@ if __name__ == "__main__":
             raise InvalidArgs()
 
         elif (len(sys.argv)) == 1:
-            SantoriniGUI().run()
+            SantoriniGUI()
 
         elif (len(sys.argv)) == 2:
             if (sys.argv[1]) not in  ['human', 'heuristic', 'random']:
                 raise InvalidArgs()
-            SantoriniGUI(sys.argv[1]).run()
+            SantoriniGUI(sys.argv[1])
 
         elif (len(sys.argv)) == 3:
             if (sys.argv[1]) not in  ['human', 'heuristic', 'random']:
                 raise InvalidArgs()
             if (sys.argv[2]) not in  ['human', 'heuristic', 'random']:
                 raise InvalidArgs()
-            SantoriniGUI(sys.argv[1], sys.argv[2]).run()
+            SantoriniGUI(sys.argv[1], sys.argv[2])
 
         elif (len(sys.argv)) == 4:
             if (sys.argv[1]) not in  ['human', 'heuristic', 'random']:
@@ -35,7 +35,7 @@ if __name__ == "__main__":
                 raise InvalidArgs()
             if (sys.argv[3]) not in  ['on', 'off']:
                 raise InvalidArgs()
-            SantoriniGUI(sys.argv[1], sys.argv[2], sys.argv[3]).run()
+            SantoriniGUI(sys.argv[1], sys.argv[2], sys.argv[3])
         
         else:
             if (sys.argv[1]) not in  ['human', 'heuristic', 'random']:
@@ -46,7 +46,7 @@ if __name__ == "__main__":
                 raise InvalidArgs()
             if (sys.argv[4]) not in  ['on', 'off']:
                 raise InvalidArgs()
-            SantoriniGUI(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]).run()
+            SantoriniGUI(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
    
     except InvalidArgs:
         print("Invalid arguments")
