@@ -23,9 +23,11 @@ Kassi:
 
 In this assignment I learned how to successfully pair program with GitHub, and how
 to navigate GitHub through the terminal. I learned how to implement the observer
-and singleton design patterns. I also learned how to build off of the previous 
-CLI from our BankCLI assignment to build a more complex CLI.
+and singleton design patterns. I also learned how to implement the basic functionalities
+of the CLI, game and random player object.
 
 Robby:
 
-Kassi made this assignment very challenging to complete.
+I learned how to throw and catch exceptions, check for invalid moves/builds, and implement
+the functionalities of the heuristic player. I also learned how to implement the command and
+iterator design patterns.
