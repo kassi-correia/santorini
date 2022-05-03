@@ -1,7 +1,7 @@
 
 from Exception import InvalidBuild, InvalidMove, InvalidRedo, InvalidUndo, InvalidWorker, WrongBuild, WrongMove, WrongWorker
 import copy
-from Players import Player, Random, Heuristic, PlayerContext
+from Players import PlayerContext
 
 INFINITY = 300
 
