@@ -27,10 +27,11 @@ class Player():
 			pos[i] += self.locs[move][i]
 		return pos
 	
-	def _pick_build(self, pos, board):
+	def _pick_build(self, pos, board, curr=None):
 		moves = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw']
 		players = ['A', 'B', 'Y', 'Z']
-		print(self._curr_piece)
+		if curr:
+			self._curr_piece = curr
 		players.remove(self._curr_piece)
 		g = pos
 		if g[0] == 0:
