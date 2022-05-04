@@ -41,7 +41,7 @@ class SantoriniGUI():
 				elif col == 3 and row == 3:
 					button=tk.Button(self._board, text='Z')
 				else:
-					button=tk.Button(self._board)
+					button=tk.Button(self._board, text=' ')
 				button.grid(row=row, column=col)
 				self._buttons.append(button)
 
