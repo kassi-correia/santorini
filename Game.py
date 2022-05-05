@@ -160,7 +160,6 @@ class Game():
         if worker not in self.workers:
             raise InvalidWorker()
         turn = self._position.turn
-        print(turn, worker)
         if worker not in self._position.pieces[turn]:
             raise WrongWorker()
         if move == None:

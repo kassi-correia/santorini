@@ -27,7 +27,7 @@ class Player():
 			pos[i] += self.locs[move][i]
 		return pos
 	
-	def _pick_build(self, pos, board, curr=None):
+	def _pick_build(self, pos, board, curr=None, zurr=False):
 		moves = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw']
 		players = ['A', 'B', 'Y', 'Z']
 		if curr:
@@ -100,6 +100,8 @@ class Player():
 					remo = True
 			if not remo:
 				i+= 1
+		if zurr:
+			return moves
 		return choice(moves)
 
 	

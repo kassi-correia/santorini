@@ -9,7 +9,7 @@ class SantoriniGUI():
 	def __init__(self, white='human', blue='human', undo='off', score='off'):
 		self._white = white
 		self._blue = blue
-		self._setter = False
+		self._setter = 0
 		self._undo = undo
 		self._score = score
 		self._mover = []
@@ -79,7 +79,7 @@ class SantoriniGUI():
 		self._window.mainloop()
 
 	def _press(self, row, col):
-		if self._setter == False:
+		if self._setter == 0:
 			board = self._game.git_board()
 			l = board[col][row][1]
 			if l != ' ':
@@ -95,8 +95,8 @@ class SantoriniGUI():
 					col -= self.locs[e][0]
 				self._mover.append(l)
 				self.labe['text'] = 'Select a direction to move (n, ne, e, se, s, sw, w, nw)'
-				self._setter = True
-		else:
+				self._setter = 1
+		elif self._setter == 1:
 			board = self._game.git_board()
 			l = board[col][row][1]
 			g = self._game.git_worker_pos(self._mover[0])
@@ -112,32 +112,59 @@ class SantoriniGUI():
 			posd = (row *5) + col
 			if self._buttons[posd]['highlightbackground'] == 'green':
 				self._mover.append(dir)
-				self._setter = False
+				self._setter = 2
 				for e in self._buttons:
 					e['highlightbackground'] = 'white'
 				p = self._game.git_curr_player()[0]
 
 				g = Player(p)
-				z = g._pick_build([col, row], board, self._mover[0])
-				self._game.make_move(self._mover[0], self._mover[1], z)
-				self._setter = False
-				self._mover = []
+				z = g._pick_build([col, row], board, self._mover[0], True)
+				for e in z:
+					row += self.locs[e][1]
+					col += self.locs[e][0]
+					posd = (row *5) + col
+					self._buttons[posd].configure(highlightbackground= 'green')
+					row-=self.locs[e][1]
+					col -= self.locs[e][0]
+		elif self._setter == 2:
 			board = self._game.git_board()
-			for i in range(25):
-				e = self._buttons[i]
-				cold = (i % 5)
-				rowd = i // 5
-				strb = str(board[cold][rowd][0])
-				strb += board[cold][rowd][1]
-				e.configure(text = strb[:])
-			if self._game._check_if_winner():
-				self.labe['text'] = self._game._check_if_winner() + " wins!"
+			l = board[col][row][1]
+			g = self._game.git_worker_pos(self._mover[0])
+			b = g.copy()
+			for i in range(2):
+				b[i] += self.locs[self._mover[1]][i]
+			b[0] = col - b[0]
+			b[1] = row - b[1]
+			dir = None
+			for e in self.locs:
+				if self.locs[e] == b:
+					dir = e
+			if dir == None:
+				return
+			posd = (row *5) + col
+			if self._buttons[posd]['highlightbackground'] == 'green':
+				self._mover.append(dir)
+				self._setter = 0
 				for e in self._buttons:
-					e.destroy()
-				if self._undo == 'on':
-					self.undo.destroy()
-					self.redo.destroy()
-					self.next.destroy()
+					e['highlightbackground'] = 'white'
+				self._game.make_move(self._mover[0], self._mover[1], dir)
+				self._mover = []
+				board = self._game.git_board()
+				for i in range(25):
+					e = self._buttons[i]
+					cold = (i % 5)
+					rowd = i // 5
+					strb = str(board[cold][rowd][0])
+					strb += board[cold][rowd][1]
+					e.configure(text = strb[:])
+				if self._game._check_if_winner():
+					self.labe['text'] = self._game._check_if_winner() + " wins!"
+					for e in self._buttons:
+						e.destroy()
+					if self._undo == 'on':
+						self.undo.destroy()
+						self.redo.destroy()
+						self.next.destroy()
 
 				
 				
