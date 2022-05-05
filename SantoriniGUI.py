@@ -2,7 +2,7 @@ import tkinter as tk
 import sys
 from Exception import InvalidMove, InvalidBuild, InvalidWorker, WrongMove, WrongBuild, WrongWorker
 from Game import Game
-from Players import Player
+from Players import Player, PlayerContext
 from random import choice
 
 class SantoriniGUI():
@@ -10,7 +10,8 @@ class SantoriniGUI():
 		self._white = white
 		self._blue = blue
 		self._setter = 0
-		self._undo = undo
+		self.__undo = undo
+		self._context = PlayerContext()
 		self._score = score
 		self._mover = []
 		self._turn_num = 1
@@ -60,24 +61,25 @@ class SantoriniGUI():
 		self._board.grid(row=0, column=1)
 		self._instruction = tk.Frame(self._window)
 		self._instruction.grid(row=7, column = 0)
+		self._undo = tk.Frame(self._window)
+		if white != 'human' or blue != 'human':
+			self._aim = tk.Button(self._undo, text = 'AI move', command = self._ai_move)
+			self._aim.grid(row=0, column=1)
 
-
-
-		if self._undo == 'on':
-			self._undo = tk.Frame(self._window)
+		if self.__undo == 'on':
 			self.undo=tk.Button(self._undo, text="Undo")
-			self.undo.grid(row=0, column=0)
+			self.undo.grid(row=1, column=0)
 			self.redo=tk.Button(self._undo, text="Redo")
-			self.redo.grid(row=0, column=1)
+			self.redo.grid(row=1, column=1)
 			self.next=tk.Button(self._undo, text="Next")
-			self.next.grid(row=0, column=2)
+			self.next.grid(row=1, column=2)
 
-			self._undo.grid(row=5, column =1)
+		self._undo.grid(row=5, column =1)
 		self._run()
 		self._window.mainloop()
 
 	def _press(self, row, col):
-		if self._setter == 0:
+		if self._setter == 0 and ((self._turn_num %2 == 1 and self._white == 'human') or (self._turn_num % 2 == 0 and self._blue == 'human')):
 			board = self._game.git_board()
 			l = board[col][row][1]
 			if l != ' ':
@@ -160,17 +162,55 @@ class SantoriniGUI():
 					self.labe['text'] = self._game._check_if_winner() + " wins!"
 					for e in self._buttons:
 						e.destroy()
-					if self._undo == 'on':
+					if self.__undo == 'on':
 						self.undo.destroy()
 						self.redo.destroy()
 						self.next.destroy()
+					return
 			self._turn_num += 1
-			self.labe['text'] = 'Select a worker.'
+			if self._game.git_type_player() != 'h':
+				self.labe['text'] = 'Make AI move.'
+			else:
+				self.labe['text'] = 'Select a worker.'
 			self._display_turn()
 			self._highlight_workers()
 			
 
-				
+	def _ai_move(self):
+		if (self._turn_num %2 == 1 and self._white == 'human') or (self._turn_num % 2 == 0 and self._blue == 'human') or self._setter != 0:
+			return 
+		board = self._game.git_board()
+		if self._white != 'human' and self._turn_num % 2 == 1:
+			self._context.set_state(self._white, 'white')
+			self._game.ai_move(self._context)
+		elif self._blue != 'human' and self._turn_num %2 == 0:
+			self._context.set_state(self._blue, 'blue')
+			self._game.ai_move(self._context)
+		board = self._game.git_board()
+		for i in range(25):
+			e = self._buttons[i]
+			cold = (i % 5)
+			rowd = i // 5
+			strb = str(board[cold][rowd][0])
+			strb += board[cold][rowd][1]
+			e.configure(text = strb[:])
+		if self._game._check_if_winner():
+			self.labe['text'] = self._game._check_if_winner() + " wins!"
+			for e in self._buttons:
+				e.destroy()
+			self._aim.destroy()
+			if self.__undo == 'on':
+				self.undo.destroy()
+				self.redo.destroy()
+				self.next.destroy()
+			return
+		self._turn_num += 1
+		if self._game.git_type_player() != 'h':
+			self.labe['text'] = 'Make AI move.'
+		else:
+			self.labe['text'] = 'Select a worker.'
+		self._display_turn()
+		self._highlight_workers()
 				
 	def _display_turn(self):
 		if self._turn_num != 1:
@@ -207,7 +247,11 @@ class SantoriniGUI():
 
 
 	def _run(self):
-		self.labe = tk.Label(self._instruction, text="Select Worker.")
+		if self._white == 'human':
+			self.labe = tk.Label(self._instruction, text="Select Worker.")
+		else:
+			self.labe = tk.Label(self._instruction, text="Make AI move.")
+     
 		self.labe.pack()
 		self._display_turn()
 		self._highlight_workers()
