@@ -58,7 +58,6 @@ class SantoriniGUI():
 				self._buttons.append(button)
 
 		self._board.grid(row=0, column=1)
-		self._turn = tk.Frame(self._window)
 		self._instruction = tk.Frame(self._window)
 		self._instruction.grid(row=7, column = 0)
 
@@ -74,7 +73,6 @@ class SantoriniGUI():
 			self.next.grid(row=0, column=2)
 
 			self._undo.grid(row=5, column =1)
-		self._display_turn()
 		self._run()
 		self._window.mainloop()
 
@@ -94,9 +92,10 @@ class SantoriniGUI():
 					row-=self.locs[e][1]
 					col -= self.locs[e][0]
 				self._mover.append(l)
-				self.labe['text'] = 'Select a direction to move (n, ne, e, se, s, sw, w, nw)'
+				self.labe['text'] = 'Select a direction to move.'
 				self._setter = 1
 		elif self._setter == 1:
+			self.labe['text'] = 'Select a direction to build.'
 			board = self._game.git_board()
 			l = board[col][row][1]
 			g = self._game.git_worker_pos(self._mover[0])
@@ -165,10 +164,19 @@ class SantoriniGUI():
 						self.undo.destroy()
 						self.redo.destroy()
 						self.next.destroy()
+			self._turn_num += 1
+			self.labe['text'] = 'Select a worker.'
+			self._display_turn()
+			self._highlight_workers()
+			
 
 				
 				
 	def _display_turn(self):
+		if self._turn_num != 1:
+			self._turn.destroy()
+		self._turn = tk.Frame(self._window)
+		
 		z = self._game.git_curr_player()
         
         # print score
@@ -195,37 +203,43 @@ class SantoriniGUI():
 			lab1.pack()
 			lab2.pack()
 		self._turn.grid(row=6, column =1)
+		return
 
 
 	def _run(self):
-		# while not self._check_if_winner():
-		# 	worker = None
-		# 	move = None
-		# 	build = None	
-		# 	if self._game.git_type_player() == 'h':
-				# while not worker:
-                    #add method to check if either worker can move
-					# if self._game.cant_move == True:
-					# 	pass
-	
 		self.labe = tk.Label(self._instruction, text="Select Worker.")
 		self.labe.pack()
+		self._display_turn()
 		self._highlight_workers()
+		
 
 	def _highlight_workers(self):
 		z = self._game.git_curr_player()
 		if z == "white (AB)":
 			for b in self._buttons:
-				if b['text'] == 'A':
+				if b['text'] == '0A' or b['text'] == '1A' or b['text'] == '2A':
 					x = b.config(fg='red')
-				if b['text'] == 'B':
-					x = b.config(fg='red')
+				elif b['text'] == '0B' or b['text'] == '1B' or b['text'] == '2B':
+					y = b.config(fg='red')
+				elif b['text'] == '3Y' or b['text'] == '3Z':
+					self._win = tk.Frame(self._window)
+					self.labe = tk.Label(self._win, text="Blue has won.")
+					self.labe.pack()
+				else:
+					k = b.config(fg='black')
 		else:
 			for b in self._buttons:
-				if b['text'] == 'Y':
+				if b['text'] == '0Y' or ['text'] == '1Y' or b['text'] == '2Y':
 					x = b.config(fg='red')
-				if b['text'] == 'Z':
-					x = b.config(fg='red')
+				elif b['text'] == '0Z' or b['text'] == '1Z' or b['text'] == '2Z':
+					y = b.config(fg='red')
+				elif b['text'] == '3A' or b['text'] == '3B':
+					self._win = tk.Frame(self._window)
+					self.labe = tk.Label(self._win, text="White has won.")
+					self.labe.pack()
+				else:
+					k = b.config(fg='black')	
+		return
 					
 	def _check_if_winner(self):
 		return self._game._check_if_winner()
